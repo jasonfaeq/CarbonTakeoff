@@ -1,0 +1,114 @@
+import type { Catalogue } from "./catalogue";
+
+/** At or above this, a pending line can count without a person accepting it. */
+export const HIGH_CONFIDENCE = 0.8;
+
+const HIGH = 0.9;
+const MEDIUM = 0.6;
+const LOW = 0.3;
+
+export interface Match {
+  factorId: string | null;
+  confidence: number;
+  reason: string;
+}
+
+interface Rule {
+  test: RegExp;
+  factorId: string | null;
+  confidence: number;
+  reason: string;
+}
+
+const CONCRETE_CLASSES: [number, string][] = [
+  [20, "concrete-c20-25"],
+  [25, "concrete-c25-30"],
+  [30, "concrete-c30-37"],
+  [50, "concrete-c50-60"],
+];
+
+const RECYCLED = /recycl|\brc[- ]?beton|\brc[- ]concrete/i;
+
+function matchConcrete(text: string): Match | null {
+  if (!/concrete|\bbeton\b|transportbeton|\bc\s?\d{2}\s*\/\s*\d{2}\b/i.test(text)) return null;
+  const cls = text.match(/\bc\s?(\d{2})\s*\/\s*(\d{2})\b/i);
+  if (!cls) {
+    return { factorId: "concrete-average", confidence: MEDIUM, reason: "Concrete with no strength class stated: average concrete" };
+  }
+  const strength = Number(cls[1]);
+  const name = cls[0].replace(/\s/g, "").toUpperCase();
+  const exact = CONCRETE_CLASSES.find(([s]) => s === strength);
+  const chosen = exact ?? [...CONCRETE_CLASSES].reverse().find(([s]) => s <= strength);
+  if (!chosen) {
+    return { factorId: "concrete-c20-25", confidence: LOW, reason: `${name} is below the lowest class (C20/25)` };
+  }
+  const recycled = RECYCLED.test(text) && chosen[0] !== 20;
+  const factorId = recycled ? chosen[1].replace("concrete-", "concrete-rc-") : chosen[1];
+  return exact
+    ? { factorId, confidence: HIGH, reason: `Strength class ${name} matches the factor` }
+    : { factorId, confidence: MEDIUM, reason: `No factor for ${name}: nearest class` };
+}
+
+/** Lines that mention concrete but are not concrete. */
+const NOT_CONCRETE = /rebar|reinforc|bewehr|anchor|\bgrout|bitumen|coating|formwork|epoxy|geotex|kerb drainage/i;
+
+/** First match wins, so the order runs from most specific to most general. English and German. */
+const RULES: Rule[] = [
+  { test: /switchgear|schaltanlage/i, factorId: null, confidence: LOW, reason: "No factor for switchgear" },
+  { test: /transformer oil|insulating oil|mineral oil/i, factorId: "mineral-oil-primary", confidence: HIGH, reason: "Named as mineral oil" },
+  { test: /transformer|\btrafo/i, factorId: "electrical-large", confidence: LOW, reason: "No transformer factor: weak proxy, check this line" },
+  { test: /\bgrout|verguss|cement mortar|zementm[oö]rtel/i, factorId: "mortar-cement", confidence: MEDIUM, reason: "Grout: cement mortar proxy" },
+  { test: /epoxy|epoxid/i, factorId: "mortar-epoxy", confidence: HIGH, reason: "Named as epoxy mortar" },
+  { test: /cem\s?iii/i, factorId: "cement-cem3", confidence: HIGH, reason: "Named as CEM III" },
+  { test: /cem\s?ii/i, factorId: "cement-cem2", confidence: HIGH, reason: "Named as CEM II" },
+  { test: /\bcement|\bzement/i, factorId: "cement-cem2", confidence: MEDIUM, reason: "Cement type not stated: CEM II" },
+  { test: /rebar|reinforc|\bb500|bewehr|betonstahl/i, factorId: "rebar", confidence: HIGH, reason: "Named as reinforcing steel" },
+  {
+    test: /(eaf|electric arc|lichtbogen).*(steel|stahl)|(steel|stahl).*(eaf|electric arc|lichtbogen)/i,
+    factorId: "steel-section-eaf",
+    confidence: HIGH,
+    reason: "Steel named as electric arc furnace route",
+  },
+  {
+    test: /structural steel|\bs235|\bs275|\bs355|\bs460|anchor cage|steel section|steel support|galvani[sz]ed steel|baustahl|stahlprofil/i,
+    factorId: "steel-section-bof",
+    confidence: MEDIUM,
+    reason: "Structural steel, route not stated: blast furnace route",
+  },
+  { test: /\bsteel\b|\bstahl\b/i, factorId: "metals-average", confidence: LOW, reason: "Steel product not identified: construction metals average" },
+  { test: /copper|kupfer|\bcu\b/i, factorId: "copper-sheet", confidence: MEDIUM, reason: "Copper: metal only, copper sheet as a proxy" },
+  { test: /alumini?um|\bal\b/i, factorId: "aluminium-primary", confidence: MEDIUM, reason: "Aluminium: metal only, primary aluminium proxy" },
+  { test: /geotex|geovlies|fleece|vlies/i, factorId: "geotextile", confidence: HIGH, reason: "Named as geotextile" },
+  { test: /\bpvc\b/i, factorId: "pvc-primary", confidence: HIGH, reason: "Named as PVC" },
+  { test: /hdpe|pe-?hd|pe100/i, factorId: "hdpe-primary", confidence: HIGH, reason: "Named as HDPE" },
+  { test: /polypropylene|\bpp\b/i, factorId: "pp-primary", confidence: HIGH, reason: "Named as polypropylene" },
+  { test: /asphalt|bitumin(ous)? (mix|macadam)/i, factorId: "asphalt-primary", confidence: HIGH, reason: "Named as asphalt" },
+  { test: /bitumen|bitumin/i, factorId: "bitumen-emulsion", confidence: MEDIUM, reason: "Bitumen coating: emulsion factor" },
+  { test: /gravel|\bkies\b/i, factorId: "gravel", confidence: HIGH, reason: "Named as gravel" },
+  { test: /\bsand\b/i, factorId: "sand", confidence: HIGH, reason: "Named as sand" },
+  { test: /crushed|aggregate|backfill|hardcore|schotter|sub-?base/i, factorId: "aggregates-primary", confidence: HIGH, reason: "Named as aggregate" },
+  { test: /timber|formwork|\bwood\b|\bholz\b|schalung/i, factorId: "wood-primary", confidence: HIGH, reason: "Named as timber" },
+];
+
+export function matchFactor(description: string): Match {
+  const text = description.trim();
+  const concrete = matchConcrete(text);
+  if (concrete && !NOT_CONCRETE.test(text)) return concrete;
+  for (const rule of RULES) {
+    if (rule.test.test(text)) return { factorId: rule.factorId, confidence: rule.confidence, reason: rule.reason };
+  }
+  return { factorId: null, confidence: 0, reason: "No rule matched: pick a factor or reject this line" };
+}
+
+/** A proxy factor can never be high confidence, whatever matched it. */
+export function capConfidence(confidence: number, factorId: string | null, catalogue: Catalogue): number {
+  const factor = factorId ? catalogue.byId.get(factorId) : undefined;
+  if (factor?.applicability === "proxy") return Math.min(confidence, MEDIUM);
+  return confidence;
+}
+
+export function confidenceLabel(confidence: number): "High" | "Medium" | "Low" {
+  if (confidence >= HIGH_CONFIDENCE) return "High";
+  if (confidence >= 0.5) return "Medium";
+  return "Low";
+}

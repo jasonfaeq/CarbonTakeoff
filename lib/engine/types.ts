@@ -1,5 +1,6 @@
 export type DeclaredUnit = "kg" | "t" | "m3" | "m2" | "m";
-export type FactorStatus = "VERIFIED" | "UNVERIFIED";
+/** PLACEHOLDER: synthetic development value, never a real estimate. */
+export type FactorStatus = "VERIFIED" | "UNVERIFIED" | "PLACEHOLDER";
 export type Applicability = "direct" | "proxy";
 export type LineStatus = "pending" | "accepted" | "rejected";
 
