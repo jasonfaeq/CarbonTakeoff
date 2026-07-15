@@ -38,15 +38,16 @@ function matchConcrete(text: string): Match | null {
   const strength = Number(cls[1]);
   const name = cls[0].replace(/\s/g, "").toUpperCase();
   const exact = CONCRETE_CLASSES.find(([s]) => s === strength);
-  const chosen = exact ?? [...CONCRETE_CLASSES].reverse().find(([s]) => s <= strength);
+  // round UP to the next class we have. rounding down underestimates and a screening number should err high
+  const chosen = exact ?? CONCRETE_CLASSES.find(([s]) => s >= strength);
   if (!chosen) {
-    return { factorId: "concrete-c20-25", confidence: LOW, reason: `${name} is below the lowest class (C20/25)` };
+    return { factorId: "concrete-c50-60", confidence: LOW, reason: `${name} is above the highest class (C50/60)` };
   }
   const recycled = RECYCLED.test(text) && chosen[0] !== 20;
   const factorId = recycled ? chosen[1].replace("concrete-", "concrete-rc-") : chosen[1];
   return exact
     ? { factorId, confidence: HIGH, reason: `Strength class ${name} matches the factor` }
-    : { factorId, confidence: MEDIUM, reason: `No factor for ${name}: nearest class` };
+    : { factorId, confidence: MEDIUM, reason: `No factor for ${name}: next class up` };
 }
 
 /** Lines that mention concrete but are not concrete. */

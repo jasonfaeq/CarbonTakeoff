@@ -9,6 +9,13 @@ describe("matchFactor", () => {
     expect(matchFactor("Pedestal concrete C50/60").confidence).toBeGreaterThanOrEqual(0.8);
   });
 
+  it("rounds a class between factors up, not down", () => {
+    expect(matchFactor("Wall concrete C35/45").factorId).toBe("concrete-c50-60");
+    expect(matchFactor("Wall concrete C35/45").confidence).toBe(0.6);
+    expect(matchFactor("Lean mix C16/20").factorId).toBe("concrete-c20-25");
+    expect(matchFactor("Concrete C55/67").confidence).toBe(0.3);
+  });
+
   it("uses the recycled-aggregate factor when the line says so", () => {
     expect(matchFactor("Recycled aggregate concrete C30/37").factorId).toBe("concrete-rc-c30-37");
   });
