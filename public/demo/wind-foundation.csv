@@ -1,0 +1,27 @@
+# SYNTHETIC DEMO DATA. Made up for Carbon Takeoff. Quantities are illustrative and the prices are invented.
+section,description,quantity,unit,kg_per_unit,unit_price_eur
+WTG foundation,Blinding concrete C20/25,60,m3,,110
+WTG foundation,Foundation slab concrete C30/37,640,m3,,135
+WTG foundation,Pedestal concrete C50/60,75,m3,,175
+WTG foundation,Reinforcing steel B500B,82,t,,980
+WTG foundation,Anchor cage structural steel S355,14,t,,2150
+WTG foundation,High-strength grout under tower flange,3.2,m3,,1800
+WTG foundation,Epoxy levelling mortar,420,kg,,14.5
+WTG foundation,Bitumen coating to buried concrete,650,kg,,3.2
+WTG foundation,Crushed stone backfill 0/45,1200,t,,18
+WTG foundation,Gravel drainage layer 2/32,180,t,,22
+WTG foundation,Geotextile separation layer 500 g/m2,1400,m2,0.5,2.6
+WTG foundation,Timber formwork,9,t,,640
+Cabling,Copper earthing tape 25 x 3 mm,240,m,0.67,14
+Cabling,MV cable 3 x 1 x 240 mm2 aluminium conductor,1800,m,1.95,28
+Cabling,LV cable 4 x 95 mm2 copper conductor,320,m,3.4,62
+Cabling,PVC cable duct DN160,900,m,2.6,11
+Cabling,HDPE drainage pipe DN110,260,m,1.1,9.5
+Substation,Substation slab concrete C25/30,85,m3,,128
+Substation,Substation reinforcing steel B500B,9.5,t,,1020
+Substation,Galvanised steel support structures,18,t,,2650
+Substation,Cement CEM II/A 42.5 for site mortar,6,t,,165
+Substation,Aluminium busbar,1.2,t,,6200
+Substation,Power transformer 25 MVA 110/20 kV,38,t,,13500
+Substation,Transformer oil top-up,1.2,t,,1500
+Substation,MV switchgear panel,6,pcs,,38000

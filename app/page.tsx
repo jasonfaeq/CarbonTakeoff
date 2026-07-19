@@ -47,6 +47,18 @@ export default function Home() {
           }}
         />
       </label>
+      <button
+        className="ml-3 rounded border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+        onClick={async () => {
+          // TODO more demos later
+          const res = await fetch("/demo/wind-foundation.csv");
+          setError(null);
+          setLines(parseCsv(await res.text(), "wind-foundation.csv", catalogue));
+          setFile("wind-foundation.csv");
+        }}
+      >
+        Load demo
+      </button>
       <p className="mt-2 text-sm text-zinc-500">Columns: description, quantity, unit. Optional: section, kg_per_unit, unit_price_eur.</p>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
