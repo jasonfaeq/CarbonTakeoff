@@ -1,22 +1,26 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ReviewTable } from "@/components/ReviewTable";
 import { BomParseError, parseCsv } from "@/lib/bom/parse";
 import { catalogue, usingPlaceholderFactors } from "@/lib/catalogue";
-import { computeTotals, confidenceLabel, type BomLine } from "@/lib/engine";
-import { factorValue, quantity, tonnes } from "@/lib/format";
+import { computeTotals, HIGH_CONFIDENCE } from "@/lib/engine";
+import { tonnes } from "@/lib/format";
+import { actions, useProjectState } from "@/lib/store";
+
+const CSV_PROVENANCE = "Parsed and rule-matched in your browser. The file was not uploaded.";
 
 export default function Home() {
-  const [lines, setLines] = useState<BomLine[]>([]);
-  const [file, setFile] = useState<string | null>(null);
+  const { lines, document, autoAcceptHigh } = useProjectState();
   const [error, setError] = useState<string | null>(null);
-  const totals = useMemo(() => computeTotals(lines, catalogue, { autoAcceptHigh: true }), [lines]);
+  const options = useMemo(() => ({ autoAcceptHigh }), [autoAcceptHigh]);
+  const totals = useMemo(() => computeTotals(lines, catalogue, options), [lines, options]);
+  const highPending = lines.filter((l) => l.status === "pending" && l.factorId && l.confidence >= HIGH_CONFIDENCE);
 
-  async function onFile(f: File) {
+  async function load(text: string, name: string) {
     setError(null);
     try {
-      setLines(parseCsv(await f.text(), f.name, catalogue));
-      setFile(f.name);
+      actions.loadDocument(parseCsv(text, name, catalogue), { file: name, provenance: CSV_PROVENANCE });
     } catch (e) {
       setError(e instanceof BomParseError ? e.message : "This file could not be read as a CSV.");
     }
@@ -26,7 +30,7 @@ export default function Home() {
     <main className="mx-auto w-full max-w-6xl px-6 py-12">
       <h1 className="text-3xl font-semibold tracking-tight">Carbon Takeoff</h1>
       <p className="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-400">
-        Load a bill of materials as CSV. Each line is matched to an emission factor and converted to the factor&apos;s unit.
+        Load a bill of materials as CSV, check every matched line, and only accepted lines count towards the total.
       </p>
       {usingPlaceholderFactors && (
         <p className="mt-4 rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">
@@ -34,90 +38,70 @@ export default function Home() {
         </p>
       )}
 
-      <label className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900">
-        Choose a CSV
-        <input
-          type="file"
-          accept=".csv,text/csv"
-          className="sr-only"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) onFile(f);
-            e.target.value = "";
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900">
+          Choose a CSV
+          <input
+            type="file"
+            accept=".csv,text/csv"
+            className="sr-only"
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              if (f) await load(await f.text(), f.name);
+              e.target.value = "";
+            }}
+          />
+        </label>
+        <button
+          className="rounded border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+          onClick={async () => {
+            const res = await fetch("/demo/wind-foundation.csv");
+            await load(await res.text(), "wind-foundation.csv");
           }}
-        />
-      </label>
-      <button
-        className="ml-3 rounded border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
-        onClick={async () => {
-          // TODO more demos later
-          const res = await fetch("/demo/wind-foundation.csv");
-          setError(null);
-          setLines(parseCsv(await res.text(), "wind-foundation.csv", catalogue));
-          setFile("wind-foundation.csv");
-        }}
-      >
-        Load demo
-      </button>
+        >
+          Load demo
+        </button>
+        {lines.length > 0 && (
+          <button className="text-sm text-zinc-500 underline underline-offset-4 hover:text-zinc-900" onClick={actions.reset}>
+            Start over
+          </button>
+        )}
+      </div>
       <p className="mt-2 text-sm text-zinc-500">Columns: description, quantity, unit. Optional: section, kg_per_unit, unit_price_eur.</p>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
-      {lines.length > 0 && (
+      {document && (
         <section className="mt-8">
-          <div className="flex items-baseline justify-between">
-            <h2 className="text-lg font-medium">{file}</h2>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-medium">{document.file}</h2>
+              <p className="text-sm text-zinc-500">{document.provenance}</p>
+            </div>
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
               <span className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">{tonnes(totals.kgCO2e)}</span> tCO₂e from{" "}
               {totals.countedLines} of {lines.length} lines
+              {totals.pendingLines > 0 && `, ${totals.pendingLines} need review`}
             </p>
           </div>
-          <table className="mt-4 w-full text-left text-sm">
-            <thead className="border-b border-zinc-300 text-zinc-500 dark:border-zinc-700">
-              <tr>
-                <th className="py-2 pr-3 font-medium">Line</th>
-                <th className="py-2 pr-3 text-right font-medium">Quantity</th>
-                <th className="py-2 pr-3 font-medium">Factor</th>
-                <th className="py-2 pr-3 font-medium">Confidence</th>
-                <th className="py-2 text-right font-medium">tCO₂e</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lines.map((line, i) => {
-                const factor = line.factorId ? catalogue.byId.get(line.factorId) : undefined;
-                const result = totals.results[i];
-                return (
-                  <tr key={line.id} className="border-b border-zinc-100 align-top dark:border-zinc-800">
-                    <td className="py-2 pr-3">
-                      <div className="font-medium">{line.description}</div>
-                      <div className="text-xs text-zinc-500">
-                        {line.section ? `${line.section} · ` : ""}
-                        {line.source.ref}
-                      </div>
-                    </td>
-                    <td className="py-2 pr-3 text-right tabular-nums">
-                      {quantity(line.quantity)} {line.unit}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {factor ? (
-                        <>
-                          <div>{factor.name}</div>
-                          <div className="text-xs text-zinc-500">
-                            {factorValue(factor.value)} {factor.unit} · {line.matchReason}
-                          </div>
-                        </>
-                      ) : (
-                        <span className="text-zinc-500">{line.matchReason}</span>
-                      )}
-                    </td>
-                    <td className="py-2 pr-3">{confidenceLabel(line.confidence)}</td>
-                    <td className="py-2 text-right tabular-nums">
-                      {result.kgCO2e !== null ? tonnes(result.kgCO2e) : <span className="text-xs text-red-600">{result.error}</span>}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="mt-4 flex flex-wrap items-center gap-4 rounded border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800">
+            <label className="flex items-center gap-2">
+              <input type="checkbox" checked={autoAcceptHigh} onChange={(e) => actions.setAutoAccept(e.target.checked)} />
+              Auto-accept high confidence
+            </label>
+            <button
+              className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700"
+              disabled={highPending.length === 0}
+              onClick={() =>
+                actions.setStatus(
+                  highPending.map((l) => l.id),
+                  "accepted",
+                )
+              }
+            >
+              Accept high confidence ({highPending.length})
+            </button>
+          </div>
+          <ReviewTable lines={lines} totals={totals} autoAcceptHigh={autoAcceptHigh} />
         </section>
       )}
     </main>
