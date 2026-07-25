@@ -1,21 +1,35 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ReviewTable } from "@/components/ReviewTable";
 import { BomParseError, parseCsv } from "@/lib/bom/parse";
 import { catalogue, usingPlaceholderFactors } from "@/lib/catalogue";
 import { computeTotals, HIGH_CONFIDENCE } from "@/lib/engine";
 import { tonnes } from "@/lib/format";
-import { actions, useProjectState } from "@/lib/store";
+import { actions, useHistory, useProjectState } from "@/lib/store";
 
 const CSV_PROVENANCE = "Parsed and rule-matched in your browser. The file was not uploaded.";
 
 export default function Home() {
   const { lines, document, autoAcceptHigh } = useProjectState();
+  const { canUndo, canRedo } = useHistory();
   const [error, setError] = useState<string | null>(null);
   const options = useMemo(() => ({ autoAcceptHigh }), [autoAcceptHigh]);
   const totals = useMemo(() => computeTotals(lines, catalogue, options), [lines, options]);
   const highPending = lines.filter((l) => l.status === "pending" && l.factorId && l.confidence >= HIGH_CONFIDENCE);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== "z") return;
+      const el = e.target as HTMLElement;
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+      e.preventDefault();
+      if (e.shiftKey) actions.redo();
+      else actions.undo();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   async function load(text: string, name: string) {
     setError(null);
@@ -100,6 +114,19 @@ export default function Home() {
             >
               Accept high confidence ({highPending.length})
             </button>
+            <div className="ml-auto flex gap-2">
+              <button className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700" disabled={!canUndo} onClick={actions.undo} title="Undo (Ctrl+Z)">
+                Undo
+              </button>
+              <button
+                className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700"
+                disabled={!canRedo}
+                onClick={actions.redo}
+                title="Redo (Ctrl+Shift+Z)"
+              >
+                Redo
+              </button>
+            </div>
           </div>
           <ReviewTable lines={lines} totals={totals} autoAcceptHigh={autoAcceptHigh} />
         </section>

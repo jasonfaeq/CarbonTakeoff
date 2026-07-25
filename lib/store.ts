@@ -16,28 +16,36 @@ export interface ProjectState {
 }
 
 const STORAGE_KEY = "carbon-takeoff:project";
+/** Undo history is in memory only: a reload keeps the project but not its history. */
+const HISTORY_LIMIT = 100;
 
 const initial: ProjectState = { lines: [], document: null, autoAcceptHigh: true };
 
 let state: ProjectState = initial;
 let loaded = false;
+let past: ProjectState[] = [];
+let future: ProjectState[] = [];
 const listeners = new Set<() => void>();
 
 function load() {
   if (loaded || typeof window === "undefined") return;
   loaded = true;
   try {
-    const stored = window.sessionStorage.getItem(STORAGE_KEY);
+    const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored) state = { ...initial, ...JSON.parse(stored) };
   } catch {
     // Blocked or corrupt storage: start empty.
   }
 }
 
-function setState(next: ProjectState) {
+function setState(next: ProjectState, record = true) {
+  if (record && next !== state) {
+    past = [...past.slice(-(HISTORY_LIMIT - 1)), state];
+    future = [];
+  }
   state = next;
   try {
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
     // Still works for this page view, just not after a reload.
   }
@@ -60,7 +68,29 @@ export function useProjectState(): ProjectState {
   );
 }
 
+export function useHistory() {
+  // past and future change only through setState, which notifies, so reading them in render is safe.
+  useProjectState();
+  return { canUndo: past.length > 0, canRedo: future.length > 0 };
+}
+
 export const actions = {
+  undo(): boolean {
+    const previous = past.at(-1);
+    if (!previous) return false;
+    past = past.slice(0, -1);
+    future = [state, ...future];
+    setState(previous, false);
+    return true;
+  },
+  redo(): boolean {
+    const next = future[0];
+    if (!next) return false;
+    future = future.slice(1);
+    past = [...past, state];
+    setState(next, false);
+    return true;
+  },
   loadDocument(lines: BomLine[], document: DocumentInfo, autoAcceptHigh = true) {
     setState({ lines, document, autoAcceptHigh });
   },
