@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Results } from "@/components/Results";
 import { ReviewTable } from "@/components/ReviewTable";
 import { BomParseError, parseCsv } from "@/lib/bom/parse";
 import { catalogue, usingPlaceholderFactors } from "@/lib/catalogue";
@@ -14,6 +15,7 @@ export default function Home() {
   const { lines, document, autoAcceptHigh } = useProjectState();
   const { canUndo, canRedo } = useHistory();
   const [error, setError] = useState<string | null>(null);
+  const [view, setView] = useState<"review" | "results">("review");
   const options = useMemo(() => ({ autoAcceptHigh }), [autoAcceptHigh]);
   const totals = useMemo(() => computeTotals(lines, catalogue, options), [lines, options]);
   const highPending = lines.filter((l) => l.status === "pending" && l.factorId && l.confidence >= HIGH_CONFIDENCE);
@@ -97,38 +99,61 @@ export default function Home() {
               {totals.pendingLines > 0 && `, ${totals.pendingLines} need review`}
             </p>
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-4 rounded border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={autoAcceptHigh} onChange={(e) => actions.setAutoAccept(e.target.checked)} />
-              Auto-accept high confidence
-            </label>
-            <button
-              className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700"
-              disabled={highPending.length === 0}
-              onClick={() =>
-                actions.setStatus(
-                  highPending.map((l) => l.id),
-                  "accepted",
-                )
-              }
-            >
-              Accept high confidence ({highPending.length})
-            </button>
-            <div className="ml-auto flex gap-2">
-              <button className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700" disabled={!canUndo} onClick={actions.undo} title="Undo (Ctrl+Z)">
-                Undo
-              </button>
+          <div className="mt-6 flex gap-1 border-b border-zinc-200 dark:border-zinc-800" role="tablist">
+            {(["review", "results"] as const).map((v) => (
               <button
-                className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700"
-                disabled={!canRedo}
-                onClick={actions.redo}
-                title="Redo (Ctrl+Shift+Z)"
+                key={v}
+                role="tab"
+                aria-selected={view === v}
+                className="-mb-px border-b-2 border-transparent px-3 py-2 text-sm font-medium capitalize text-zinc-500 aria-selected:border-zinc-900 aria-selected:text-zinc-900 dark:aria-selected:border-zinc-100 dark:aria-selected:text-zinc-100"
+                onClick={() => setView(v)}
               >
-                Redo
+                {v}
               </button>
-            </div>
+            ))}
           </div>
-          <ReviewTable lines={lines} totals={totals} autoAcceptHigh={autoAcceptHigh} />
+          {view === "results" && <Results lines={lines} totals={totals} />}
+          {view === "review" && (
+            <>
+              <div className="mt-4 flex flex-wrap items-center gap-4 rounded border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" checked={autoAcceptHigh} onChange={(e) => actions.setAutoAccept(e.target.checked)} />
+                  Auto-accept high confidence
+                </label>
+                <button
+                  className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700"
+                  disabled={highPending.length === 0}
+                  onClick={() =>
+                    actions.setStatus(
+                      highPending.map((l) => l.id),
+                      "accepted",
+                    )
+                  }
+                >
+                  Accept high confidence ({highPending.length})
+                </button>
+                <div className="ml-auto flex gap-2">
+                  <button
+                    className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700"
+                    disabled={!canUndo}
+                    onClick={actions.undo}
+                    title="Undo (Ctrl+Z)"
+                  >
+                    Undo
+                  </button>
+                  <button
+                    className="rounded border border-zinc-300 px-3 py-1 disabled:opacity-40 dark:border-zinc-700"
+                    disabled={!canRedo}
+                    onClick={actions.redo}
+                    title="Redo (Ctrl+Shift+Z)"
+                  >
+                    Redo
+                  </button>
+                </div>
+              </div>
+              <ReviewTable lines={lines} totals={totals} autoAcceptHigh={autoAcceptHigh} />
+            </>
+          )}
         </section>
       )}
     </main>
