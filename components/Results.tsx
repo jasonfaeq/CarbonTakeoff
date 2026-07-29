@@ -33,7 +33,7 @@ export function Results({ lines, totals }: { lines: BomLine[]; totals: Totals })
         />
         <Tile
           label="From proxy factors"
-          value={`${((proxyKg / totals.kgCO2e) * 100).toFixed(0)}%`}
+          value={`${((proxyKg / totals.kgCO2e) * 100).toFixed(1)}%`}
           detail="The closest factor, not the exact product"
         />
       </div>
@@ -43,12 +43,13 @@ export function Results({ lines, totals }: { lines: BomLine[]; totals: Totals })
           <h3 className="font-medium">By material</h3>
           <ul className="mt-3 grid gap-2">
             {totals.byGroup.map((g) => (
-              <li key={g.key} className="grid grid-cols-[9rem_1fr_4rem] items-center gap-3 text-sm">
+              <li key={g.key} className="grid grid-cols-[9rem_1fr_4rem_3rem] items-center gap-3 text-sm">
                 <span className="truncate">{g.key}</span>
                 <span className="h-3 rounded bg-zinc-200 dark:bg-zinc-800">
                   <span className="block h-3 rounded bg-emerald-600" style={{ width: `${(g.kgCO2e / max) * 100}%` }} />
                 </span>
                 <span className="text-right tabular-nums">{tonnes(g.kgCO2e)}</span>
+                <span className="text-right tabular-nums text-zinc-500">{Math.round((g.kgCO2e / totals.kgCO2e) * 100)}%</span>
               </li>
             ))}
           </ul>
