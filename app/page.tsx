@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Alternatives } from "@/components/Alternatives";
 import { Results } from "@/components/Results";
 import { ReviewTable } from "@/components/ReviewTable";
 import { BomParseError, parseCsv } from "@/lib/bom/parse";
@@ -12,10 +13,10 @@ import { actions, useHistory, useProjectState } from "@/lib/store";
 const CSV_PROVENANCE = "Parsed and rule-matched in your browser. The file was not uploaded.";
 
 export default function Home() {
-  const { lines, document, autoAcceptHigh } = useProjectState();
+  const { lines, document, autoAcceptHigh, switches } = useProjectState();
   const { canUndo, canRedo } = useHistory();
   const [error, setError] = useState<string | null>(null);
-  const [view, setView] = useState<"review" | "results">("review");
+  const [view, setView] = useState<"review" | "results" | "alternatives">("review");
   const options = useMemo(() => ({ autoAcceptHigh }), [autoAcceptHigh]);
   const totals = useMemo(() => computeTotals(lines, catalogue, options), [lines, options]);
   const highPending = lines.filter((l) => l.status === "pending" && l.factorId && l.confidence >= HIGH_CONFIDENCE);
@@ -100,7 +101,7 @@ export default function Home() {
             </p>
           </div>
           <div className="mt-6 flex gap-1 border-b border-zinc-200 dark:border-zinc-800" role="tablist">
-            {(["review", "results"] as const).map((v) => (
+            {(["review", "results", "alternatives"] as const).map((v) => (
               <button
                 key={v}
                 role="tab"
@@ -113,6 +114,7 @@ export default function Home() {
             ))}
           </div>
           {view === "results" && <Results lines={lines} totals={totals} />}
+          {view === "alternatives" && <Alternatives lines={lines} switches={switches} options={options} />}
           {view === "review" && (
             <>
               <div className="mt-4 flex flex-wrap items-center gap-4 rounded border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800">

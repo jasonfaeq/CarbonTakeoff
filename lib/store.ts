@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { BomLine, LineStatus } from "@/lib/engine";
+import type { BomLine, LineStatus, Switches } from "@/lib/engine";
 
 export interface DocumentInfo {
   file: string;
@@ -13,13 +13,15 @@ export interface ProjectState {
   lines: BomLine[];
   document: DocumentInfo | null;
   autoAcceptHigh: boolean;
+  /** Alternatives chosen in the Alternatives tab. */
+  switches: Switches;
 }
 
 const STORAGE_KEY = "carbon-takeoff:project";
 /** Undo history is in memory only: a reload keeps the project but not its history. */
 const HISTORY_LIMIT = 100;
 
-const initial: ProjectState = { lines: [], document: null, autoAcceptHigh: true };
+const initial: ProjectState = { lines: [], document: null, autoAcceptHigh: true, switches: {} };
 
 let state: ProjectState = initial;
 let loaded = false;
@@ -92,14 +94,20 @@ export const actions = {
     return true;
   },
   loadDocument(lines: BomLine[], document: DocumentInfo, autoAcceptHigh = true) {
-    setState({ lines, document, autoAcceptHigh });
+    setState({ ...initial, lines, document, autoAcceptHigh });
   },
   updateLine(id: string, patch: Partial<BomLine>) {
-    setState({ ...state, lines: state.lines.map((l) => (l.id === id ? { ...l, ...patch } : l)) });
+    const switches = { ...state.switches };
+    // A new factor makes the old alternative meaningless.
+    if ("factorId" in patch) delete switches[id];
+    setState({ ...state, switches, lines: state.lines.map((l) => (l.id === id ? { ...l, ...patch } : l)) });
   },
   setStatus(ids: string[], status: LineStatus) {
     const set = new Set(ids);
     setState({ ...state, lines: state.lines.map((l) => (set.has(l.id) ? { ...l, status } : l)) });
+  },
+  setSwitches(switches: Switches) {
+    setState({ ...state, switches });
   },
   setAutoAccept(autoAcceptHigh: boolean) {
     setState({ ...state, autoAcceptHigh });
