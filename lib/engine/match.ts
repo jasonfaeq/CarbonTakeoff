@@ -11,6 +11,8 @@ export interface Match {
   factorId: string | null;
   confidence: number;
   reason: string;
+  /** Spend commodity, set only where no activity factor carries one. */
+  naics: string | null;
 }
 
 interface Rule {
@@ -18,6 +20,7 @@ interface Rule {
   factorId: string | null;
   confidence: number;
   reason: string;
+  naics?: string;
 }
 
 const CONCRETE_CLASSES: [number, string][] = [
@@ -33,7 +36,7 @@ function matchConcrete(text: string): Match | null {
   if (!/concrete|\bbeton\b|transportbeton|\bc\s?\d{2}\s*\/\s*\d{2}\b/i.test(text)) return null;
   const cls = text.match(/\bc\s?(\d{2})\s*\/\s*(\d{2})\b/i);
   if (!cls) {
-    return { factorId: "concrete-average", confidence: MEDIUM, reason: "Concrete with no strength class stated: average concrete" };
+    return { factorId: "concrete-average", confidence: MEDIUM, reason: "Concrete with no strength class stated: average concrete", naics: null };
   }
   const strength = Number(cls[1]);
   const name = cls[0].replace(/\s/g, "").toUpperCase();
@@ -41,13 +44,13 @@ function matchConcrete(text: string): Match | null {
   // round UP to the next class we have. rounding down underestimates and a screening number should err high
   const chosen = exact ?? CONCRETE_CLASSES.find(([s]) => s >= strength);
   if (!chosen) {
-    return { factorId: "concrete-c50-60", confidence: LOW, reason: `${name} is above the highest class (C50/60)` };
+    return { factorId: "concrete-c50-60", confidence: LOW, reason: `${name} is above the highest class (C50/60)`, naics: null };
   }
   const recycled = RECYCLED.test(text) && chosen[0] !== 20;
   const factorId = recycled ? chosen[1].replace("concrete-", "concrete-rc-") : chosen[1];
   return exact
-    ? { factorId, confidence: HIGH, reason: `Strength class ${name} matches the factor` }
-    : { factorId, confidence: MEDIUM, reason: `No factor for ${name}: next class up` };
+    ? { factorId, confidence: HIGH, reason: `Strength class ${name} matches the factor`, naics: null }
+    : { factorId, confidence: MEDIUM, reason: `No factor for ${name}: next class up`, naics: null };
 }
 
 /** Lines that mention concrete but are not concrete. */
@@ -55,7 +58,7 @@ const NOT_CONCRETE = /rebar|reinforc|bewehr|anchor|\bgrout|bitumen|coating|formw
 
 /** First match wins, so the order runs from most specific to most general. English and German. */
 const RULES: Rule[] = [
-  { test: /switchgear|schaltanlage/i, factorId: null, confidence: LOW, reason: "No factor for switchgear" },
+  { test: /switchgear|schaltanlage/i, factorId: null, confidence: LOW, reason: "No factor for switchgear", naics: "335313" },
   { test: /transformer oil|insulating oil|mineral oil/i, factorId: "mineral-oil-primary", confidence: HIGH, reason: "Named as mineral oil" },
   { test: /transformer|\btrafo/i, factorId: "electrical-large", confidence: LOW, reason: "No transformer factor: weak proxy, check this line" },
   { test: /\bgrout|verguss|cement mortar|zementm[oö]rtel/i, factorId: "mortar-cement", confidence: MEDIUM, reason: "Grout: cement mortar proxy" },
@@ -96,9 +99,9 @@ export function matchFactor(description: string): Match {
   const concrete = matchConcrete(text);
   if (concrete && !NOT_CONCRETE.test(text)) return concrete;
   for (const rule of RULES) {
-    if (rule.test.test(text)) return { factorId: rule.factorId, confidence: rule.confidence, reason: rule.reason };
+    if (rule.test.test(text)) return { factorId: rule.factorId, confidence: rule.confidence, reason: rule.reason, naics: rule.naics ?? null };
   }
-  return { factorId: null, confidence: 0, reason: "No rule matched: pick a factor or reject this line" };
+  return { factorId: null, confidence: 0, reason: "No rule matched: pick a factor or reject this line", naics: null };
 }
 
 /** A proxy factor can never be high confidence, whatever matched it. */

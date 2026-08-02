@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Alternatives } from "@/components/Alternatives";
 import { Results } from "@/components/Results";
+import { SpendVsActivity } from "@/components/SpendVsActivity";
 import { ReviewTable } from "@/components/ReviewTable";
 import { BomParseError, parseCsv } from "@/lib/bom/parse";
 import { catalogue, usingPlaceholderFactors } from "@/lib/catalogue";
@@ -10,13 +11,21 @@ import { computeTotals, HIGH_CONFIDENCE } from "@/lib/engine";
 import { tonnes } from "@/lib/format";
 import { actions, useHistory, useProjectState } from "@/lib/store";
 
+type View = "review" | "results" | "alternatives" | "spend";
+const VIEWS: [View, string][] = [
+  ["review", "Review"],
+  ["results", "Results"],
+  ["alternatives", "Alternatives"],
+  ["spend", "Spend vs activity"],
+];
+
 const CSV_PROVENANCE = "Parsed and rule-matched in your browser. The file was not uploaded.";
 
 export default function Home() {
-  const { lines, document, autoAcceptHigh, switches } = useProjectState();
+  const { lines, document, autoAcceptHigh, switches, premiumPercent, comparisonLineIds } = useProjectState();
   const { canUndo, canRedo } = useHistory();
   const [error, setError] = useState<string | null>(null);
-  const [view, setView] = useState<"review" | "results" | "alternatives">("review");
+  const [view, setView] = useState<View>("review");
   const options = useMemo(() => ({ autoAcceptHigh }), [autoAcceptHigh]);
   const totals = useMemo(() => computeTotals(lines, catalogue, options), [lines, options]);
   const highPending = lines.filter((l) => l.status === "pending" && l.factorId && l.confidence >= HIGH_CONFIDENCE);
@@ -101,20 +110,21 @@ export default function Home() {
             </p>
           </div>
           <div className="mt-6 flex gap-1 border-b border-zinc-200 dark:border-zinc-800" role="tablist">
-            {(["review", "results", "alternatives"] as const).map((v) => (
+            {VIEWS.map(([v, label]) => (
               <button
                 key={v}
                 role="tab"
                 aria-selected={view === v}
-                className="-mb-px border-b-2 border-transparent px-3 py-2 text-sm font-medium capitalize text-zinc-500 aria-selected:border-zinc-900 aria-selected:text-zinc-900 dark:aria-selected:border-zinc-100 dark:aria-selected:text-zinc-100"
+                className="-mb-px border-b-2 border-transparent px-3 py-2 text-sm font-medium text-zinc-500 aria-selected:border-zinc-900 aria-selected:text-zinc-900 dark:aria-selected:border-zinc-100 dark:aria-selected:text-zinc-100"
                 onClick={() => setView(v)}
               >
-                {v}
+                {label}
               </button>
             ))}
           </div>
           {view === "results" && <Results lines={lines} totals={totals} />}
           {view === "alternatives" && <Alternatives lines={lines} switches={switches} options={options} />}
+          {view === "spend" && <SpendVsActivity lines={lines} options={options} premiumPercent={premiumPercent} lineIds={comparisonLineIds} />}
           {view === "review" && (
             <>
               <div className="mt-4 flex flex-wrap items-center gap-4 rounded border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800">

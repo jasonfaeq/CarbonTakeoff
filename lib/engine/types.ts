@@ -58,5 +58,23 @@ export interface BomLine {
   confidence: number;
   matchReason: string;
   status: LineStatus;
+  /** Spend commodity (NAICS), for lines whose commodity can't be read from the factor. */
+  naics?: string | null;
   source: LineSource;
+}
+
+export interface SpendFactor {
+  naics: string;
+  title: string;
+  /** kg CO2e per USD at purchaser prices. */
+  value: number;
+  unit: string;
+}
+
+export interface SpendData {
+  source: { sourceName: string; tableRow: string; versionYear: string; licence: string; url: string; retrieved: string };
+  fx: { usdPerEur: number; year: number; sourceName: string; url: string; retrieved: string };
+  /** Activity factor id to the NAICS commodity it is bought as. */
+  factorToNaics: Record<string, string>;
+  factors: SpendFactor[];
 }

@@ -15,13 +15,23 @@ export interface ProjectState {
   autoAcceptHigh: boolean;
   /** Alternatives chosen in the Alternatives tab. */
   switches: Switches;
+  premiumPercent: number;
+  /** Lines switched in the spend-vs-activity comparison. Null means the default: steel. */
+  comparisonLineIds: string[] | null;
 }
 
 const STORAGE_KEY = "carbon-takeoff:project";
 /** Undo history is in memory only: a reload keeps the project but not its history. */
 const HISTORY_LIMIT = 100;
 
-const initial: ProjectState = { lines: [], document: null, autoAcceptHigh: true, switches: {} };
+const initial: ProjectState = {
+  lines: [],
+  document: null,
+  autoAcceptHigh: true,
+  switches: {},
+  premiumPercent: 15,
+  comparisonLineIds: null,
+};
 
 let state: ProjectState = initial;
 let loaded = false;
@@ -108,6 +118,13 @@ export const actions = {
   },
   setSwitches(switches: Switches) {
     setState({ ...state, switches });
+  },
+  setPremium(premiumPercent: number) {
+    // A slider sends many values, which are not worth an undo step each.
+    setState({ ...state, premiumPercent }, false);
+  },
+  setComparisonLines(comparisonLineIds: string[]) {
+    setState({ ...state, comparisonLineIds });
   },
   setAutoAccept(autoAcceptHigh: boolean) {
     setState({ ...state, autoAcceptHigh });

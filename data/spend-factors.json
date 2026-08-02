@@ -1,0 +1,166 @@
+{
+  "_note": "SYNTHETIC PLACEHOLDER VALUES for the spend-based side. Not sourced. To be replaced by an import of the US EPA supply chain factors.",
+  "source": {
+    "sourceName": "Synthetic placeholder spend factors",
+    "tableRow": "n/a",
+    "versionYear": "dev",
+    "licence": "n/a",
+    "url": "",
+    "retrieved": "2026-08-02"
+  },
+  "fx": {
+    "usdPerEur": 1.08,
+    "year": 2022,
+    "sourceName": "Placeholder exchange rate",
+    "url": "",
+    "retrieved": "2026-08-02"
+  },
+  "factorToNaics": {
+    "concrete-c20-25": "327320",
+    "concrete-c25-30": "327320",
+    "concrete-c30-37": "327320",
+    "concrete-c50-60": "327320",
+    "concrete-rc-c25-30": "327320",
+    "concrete-rc-c30-37": "327320",
+    "concrete-rc-c50-60": "327320",
+    "concrete-average": "327320",
+    "cement-cem2": "327310",
+    "cement-cem3": "327310",
+    "mortar-cement": "327390",
+    "mortar-epoxy": "325520",
+    "rebar": "331110",
+    "steel-section-bof": "332312",
+    "steel-section-eaf": "332312",
+    "metals-average": "332312",
+    "metals-average-recycled": "332312",
+    "aluminium-primary": "335929",
+    "aluminium-recycled": "335929",
+    "aluminium-section": "331318",
+    "copper-sheet": "335929",
+    "aggregates-primary": "212321",
+    "aggregates-recycled": "212321",
+    "aggregates-reused": "212321",
+    "crushed-stone": "212321",
+    "gravel": "212321",
+    "sand": "212321",
+    "asphalt-primary": "324121",
+    "asphalt-recycled": "324121",
+    "pvc-primary": "326122",
+    "pvc-recycled": "326122",
+    "hdpe-primary": "326122",
+    "hdpe-recycled": "326122",
+    "pp-primary": "326122",
+    "pp-recycled": "326122",
+    "geotextile": "313230",
+    "wood-primary": "321999",
+    "wood-reused": "321999",
+    "bitumen-emulsion": "324122",
+    "mineral-oil-primary": "324191",
+    "mineral-oil-recycled": "324191",
+    "electrical-large": "335311"
+  },
+  "factors": [
+    {
+      "naics": "212321",
+      "title": "Construction Sand and Gravel Mining",
+      "value": 0.3,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "313230",
+      "title": "Nonwoven Fabric Mills",
+      "value": 0.5,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "321999",
+      "title": "All Other Miscellaneous Wood Products",
+      "value": 0.16,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "324121",
+      "title": "Asphalt Paving Mixture and Block",
+      "value": 1.1,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "324122",
+      "title": "Asphalt Shingle and Coating Materials",
+      "value": 0.6,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "324191",
+      "title": "Petroleum Lubricating Oil and Grease",
+      "value": 0.4,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "325520",
+      "title": "Adhesive Manufacturing",
+      "value": 0.5,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "326122",
+      "title": "Plastics Pipe and Pipe Fitting",
+      "value": 0.35,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "327310",
+      "title": "Cement Manufacturing",
+      "value": 3.9,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "327320",
+      "title": "Ready-Mix Concrete",
+      "value": 0.6,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "327390",
+      "title": "Other Concrete Products",
+      "value": 0.3,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "331110",
+      "title": "Iron and Steel Mills and Ferroalloy",
+      "value": 0.8,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "331318",
+      "title": "Other Aluminum Rolling, Drawing, Extruding",
+      "value": 0.7,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "332312",
+      "title": "Fabricated Structural Metal",
+      "value": 0.26,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "335311",
+      "title": "Power, Distribution, Specialty Transformers",
+      "value": 0.13,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "335313",
+      "title": "Switchgear and Switchboard Apparatus",
+      "value": 0.17,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "335929",
+      "title": "Other Communication and Energy Wire",
+      "value": 0.24,
+      "unit": "kg CO2e/USD"
+    }
+  ]
+}

@@ -55,6 +55,7 @@ export function lineFromMatch(
     factorId: match.factorId,
     confidence: capConfidence(match.confidence, match.factorId, catalogue),
     matchReason: match.reason,
+    naics: match.naics,
     source,
     ...fields,
   };
