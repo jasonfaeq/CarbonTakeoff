@@ -9,6 +9,7 @@ describe("parseNumber", () => {
     expect(parseNumber("3,2")).toBe(3.2);
     expect(parseNumber("12 500")).toBe(12500);
     expect(parseNumber(42)).toBe(42);
+    expect(parseNumber("1.250", true)).toBe(1250);
   });
 
   it("returns null for blanks and words", () => {
@@ -58,6 +59,14 @@ describe("parseCsv", () => {
     const [first] = parseCsv(csv, "test.csv", catalogue);
     expect(first.source).toMatchObject({ kind: "csv", file: "test.csv", ref: "Row 2" });
     expect(first.source.snippet).toContain("Foundation slab concrete C30/37");
+  });
+
+  it("reads a semicolon csv from excel (german), with BOM and decimal commas", () => {
+    const de = "\uFEFFBezeichnung;Menge;Einheit;Preis\nBeton C30/37;12,5;m3;135,50\nBetonstahl B500B;1.250;kg;1,05\n";
+    const lines = parseCsv(de, "de.csv", catalogue);
+    expect(lines).toHaveLength(2);
+    expect(lines[0]).toMatchObject({ quantity: 12.5, unitPriceEur: 135.5, factorId: "concrete-c30-37" });
+    expect(lines[1].quantity).toBe(1250);
   });
 
   it("names the missing column", () => {

@@ -23,15 +23,18 @@ export function fieldForHeader(header: string): BomField | null {
   return null;
 }
 
-/** Accepts 1,234.5 and 1.234,5 and plain numbers. Returns null for anything else. */
-export function parseNumber(raw: unknown): number | null {
+/**
+ * Accepts 1,234.5 and 1.234,5 and plain numbers. Returns null for anything else.
+ * decimalComma: the file uses , for decimals (semicolon csv), so 1.250 means 1250 not 1.25
+ */
+export function parseNumber(raw: unknown, decimalComma = false): number | null {
   if (typeof raw === "number") return Number.isFinite(raw) ? raw : null;
   if (typeof raw !== "string") return null;
-  let s = raw.trim().replace(/[\s ']/g, "");
+  let s = raw.trim().replace(/[\s\u00a0']/g, "");
   if (!s) return null;
   const lastComma = s.lastIndexOf(",");
   const lastDot = s.lastIndexOf(".");
-  if (lastComma > lastDot) {
+  if (decimalComma || lastComma > lastDot) {
     s = s.replace(/\./g, "").replace(",", ".");
   } else {
     s = s.replace(/,/g, "");
@@ -61,7 +64,14 @@ export function lineFromMatch(
   };
 }
 
-export function rowsToLines(headers: string[], rows: unknown[][], file: string, kind: "csv" | "xlsx", catalogue: Catalogue): BomLine[] {
+export function rowsToLines(
+  headers: string[],
+  rows: unknown[][],
+  file: string,
+  kind: "csv" | "xlsx",
+  catalogue: Catalogue,
+  decimalComma = false,
+): BomLine[] {
   const columns = headers.map(fieldForHeader);
   for (const required of REQUIRED_FIELDS) {
     if (!columns.includes(required)) {
@@ -83,11 +93,11 @@ export function rowsToLines(headers: string[], rows: unknown[][], file: string, 
         {
           description,
           section: record.section ? String(record.section).trim() : undefined,
-          quantity: parseNumber(record.quantity),
+          quantity: parseNumber(record.quantity, decimalComma),
           unit: String(record.unit ?? "").trim(),
-          kgPerUnit: parseNumber(record.kgPerUnit),
-          densityKgM3: parseNumber(record.densityKgM3),
-          unitPriceEur: parseNumber(record.unitPriceEur),
+          kgPerUnit: parseNumber(record.kgPerUnit, decimalComma),
+          densityKgM3: parseNumber(record.densityKgM3, decimalComma),
+          unitPriceEur: parseNumber(record.unitPriceEur, decimalComma),
         },
         {
           kind,
@@ -106,10 +116,20 @@ export function rowsToLines(headers: string[], rows: unknown[][], file: string, 
   return lines;
 }
 
+/** excel in a german locale saves "csv" with ; and decimal commas, and papa's guesser sometimes picks the comma */
+function guessDelimiter(text: string): string {
+  const header = text.split(/\r?\n/).find((l) => l.trim() && !l.startsWith("#")) ?? "";
+  const count = (c: string) => header.split(c).length - 1;
+  const best = [",", ";", "\t"].sort((a, b) => count(b) - count(a))[0];
+  return count(best) > 0 ? best : ",";
+}
+
 export function parseCsv(text: string, file: string, catalogue: Catalogue): BomLine[] {
+  text = text.replace(/^\uFEFF/, ""); // utf-8 BOM from excel
   // Comment lines are skipped, so a file can carry its own "synthetic data" banner.
-  const parsed = Papa.parse<string[]>(text, { skipEmptyLines: "greedy", comments: "#" });
+  const delimiter = guessDelimiter(text);
+  const parsed = Papa.parse<string[]>(text, { skipEmptyLines: "greedy", comments: "#", delimiter });
   if (parsed.data.length < 2) throw new BomParseError("The CSV needs a header row and at least one data row.");
   const [headers, ...rows] = parsed.data;
-  return rowsToLines(headers, rows, file, "csv", catalogue);
+  return rowsToLines(headers, rows, file, "csv", catalogue, delimiter === ";");
 }
