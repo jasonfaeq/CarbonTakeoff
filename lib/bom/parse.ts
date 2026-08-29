@@ -3,6 +3,16 @@ import { capConfidence, matchFactor, type BomLine, type Catalogue, type LineSour
 
 export type BomField = "description" | "quantity" | "unit" | "kgPerUnit" | "densityKgM3" | "unitPriceEur" | "section";
 
+export const FIELD_LABELS: Record<BomField, string> = {
+  description: "Description",
+  quantity: "Quantity",
+  unit: "Unit",
+  kgPerUnit: "kg per unit (m, m²)",
+  densityKgM3: "Density (kg/m³)",
+  unitPriceEur: "Unit price (EUR)",
+  section: "Section",
+};
+
 const HEADER_ALIASES: Record<BomField, string[]> = {
   description: ["description", "item", "material", "bezeichnung", "beschreibung", "position text", "name"],
   quantity: ["quantity", "qty", "menge", "amount"],
@@ -30,7 +40,8 @@ export function fieldForHeader(header: string): BomField | null {
 export function parseNumber(raw: unknown, decimalComma = false): number | null {
   if (typeof raw === "number") return Number.isFinite(raw) ? raw : null;
   if (typeof raw !== "string") return null;
-  let s = raw.trim().replace(/[\s\u00a0']/g, "");
+  // \s covers no-break spaces too, which Excel likes to put in thousands.
+  let s = raw.trim().replace(/[\s']/g, "");
   if (!s) return null;
   const lastComma = s.lastIndexOf(",");
   const lastDot = s.lastIndexOf(".");
@@ -64,40 +75,58 @@ export function lineFromMatch(
   };
 }
 
-export function rowsToLines(
-  headers: string[],
-  rows: unknown[][],
-  file: string,
-  kind: "csv" | "xlsx",
-  catalogue: Catalogue,
-  decimalComma = false,
-): BomLine[] {
-  const columns = headers.map(fieldForHeader);
-  for (const required of REQUIRED_FIELDS) {
-    if (!columns.includes(required)) {
-      throw new BomParseError(`Missing a "${required}" column. Found: ${headers.join(", ")}`);
-    }
+/** A table as read from a file, before anyone has said which column is which. */
+export interface RawTable {
+  headers: string[];
+  rows: unknown[][];
+  /** 1-based row number of the header in the file, so refs point at the real row. */
+  headerRow: number;
+  decimalComma: boolean;
+}
+
+/** Which field each column holds, by column index. */
+export type ColumnMapping = (BomField | null)[];
+
+export function autoMapping(headers: string[]): ColumnMapping {
+  const seen = new Set<BomField>();
+  return headers.map((h) => {
+    const field = fieldForHeader(h);
+    if (!field || seen.has(field)) return null;
+    seen.add(field);
+    return field;
+  });
+}
+
+export function missingFields(mapping: ColumnMapping): BomField[] {
+  return REQUIRED_FIELDS.filter((f) => !mapping.includes(f));
+}
+
+export function tableToLines(table: RawTable, mapping: ColumnMapping, file: string, kind: "csv" | "xlsx", catalogue: Catalogue): BomLine[] {
+  const missing = missingFields(mapping);
+  if (missing.length > 0) {
+    throw new BomParseError(`Missing a "${missing[0]}" column. Found: ${table.headers.join(", ")}`);
   }
+  const num = (v: unknown) => parseNumber(v, table.decimalComma);
   const lines: BomLine[] = [];
-  rows.forEach((row, index) => {
+  table.rows.forEach((row, index) => {
     const record: Partial<Record<BomField, unknown>> = {};
-    columns.forEach((field, c) => {
+    mapping.forEach((field, c) => {
       if (field) record[field] = row[c];
     });
     const description = String(record.description ?? "").trim();
     if (!description) return;
-    const rowNumber = index + 2;
+    const rowNumber = table.headerRow + index + 1;
     lines.push(
       lineFromMatch(
         `${kind}-${rowNumber}`,
         {
           description,
           section: record.section ? String(record.section).trim() : undefined,
-          quantity: parseNumber(record.quantity, decimalComma),
+          quantity: num(record.quantity),
           unit: String(record.unit ?? "").trim(),
-          kgPerUnit: parseNumber(record.kgPerUnit, decimalComma),
-          densityKgM3: parseNumber(record.densityKgM3, decimalComma),
-          unitPriceEur: parseNumber(record.unitPriceEur, decimalComma),
+          kgPerUnit: num(record.kgPerUnit),
+          densityKgM3: num(record.densityKgM3),
+          unitPriceEur: num(record.unitPriceEur),
         },
         {
           kind,
@@ -124,12 +153,31 @@ function guessDelimiter(text: string): string {
   return count(best) > 0 ? best : ",";
 }
 
-export function parseCsv(text: string, file: string, catalogue: Catalogue): BomLine[] {
-  text = text.replace(/^\uFEFF/, ""); // utf-8 BOM from excel
-  // Comment lines are skipped, so a file can carry its own "synthetic data" banner.
+export function readCsvTable(text: string): RawTable {
+  if (text.charCodeAt(0) === 0xfeff) text = text.slice(1); // utf-8 BOM from excel
   const delimiter = guessDelimiter(text);
-  const parsed = Papa.parse<string[]>(text, { skipEmptyLines: "greedy", comments: "#", delimiter });
-  if (parsed.data.length < 2) throw new BomParseError("The CSV needs a header row and at least one data row.");
-  const [headers, ...rows] = parsed.data;
-  return rowsToLines(headers, rows, file, "csv", catalogue, delimiter === ";");
+  // Comment lines are skipped, so a file can carry its own "synthetic data" banner. Empty rows are
+  // kept (and ignored later) so row numbers still match the file.
+  const parsed = Papa.parse<string[]>(text, { skipEmptyLines: false, comments: "#", delimiter });
+  const [headers = [], ...rows] = parsed.data;
+  if (!rows.some((r) => r.some((c) => c.trim()))) throw new BomParseError("The CSV needs a header row and at least one data row.");
+  const bannerLines = text.split(/\r?\n/).findIndex((l) => l.trim() && !l.startsWith("#"));
+  return { headers, rows, headerRow: Math.max(bannerLines, 0) + 1, decimalComma: delimiter === ";" };
+}
+
+/** Header row: the first row with at least three filled cells, so a title block above it is skipped. */
+export function sheetToTable(sheet: unknown[][]): RawTable {
+  const headerIndex = sheet.findIndex((r) => r.filter((c) => c !== null && c !== undefined && String(c).trim() !== "").length >= 3);
+  if (headerIndex < 0) throw new BomParseError("No header row found in the first sheet.");
+  return {
+    headers: sheet[headerIndex].map((c) => String(c ?? "").trim()),
+    rows: sheet.slice(headerIndex + 1),
+    headerRow: headerIndex + 1,
+    decimalComma: false,
+  };
+}
+
+export function parseCsv(text: string, file: string, catalogue: Catalogue): BomLine[] {
+  const table = readCsvTable(text);
+  return tableToLines(table, autoMapping(table.headers), file, "csv", catalogue);
 }

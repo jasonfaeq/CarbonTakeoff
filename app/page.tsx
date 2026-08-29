@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Alternatives } from "@/components/Alternatives";
+import { ImportDialog } from "@/components/ImportDialog";
 import { Results } from "@/components/Results";
 import { SpendVsActivity } from "@/components/SpendVsActivity";
 import { ReviewTable } from "@/components/ReviewTable";
-import { BomParseError, parseCsv } from "@/lib/bom/parse";
+import { autoMapping, BomParseError, missingFields, readCsvTable, tableToLines, type ColumnMapping, type RawTable } from "@/lib/bom/parse";
+import { readXlsxTable } from "@/lib/bom/xlsx";
 import { catalogue, usingPlaceholderFactors } from "@/lib/catalogue";
 import { computeTotals, HIGH_CONFIDENCE } from "@/lib/engine";
 import { tonnes } from "@/lib/format";
@@ -19,13 +21,21 @@ const VIEWS: [View, string][] = [
   ["spend", "Spend vs activity"],
 ];
 
-const CSV_PROVENANCE = "Parsed and rule-matched in your browser. The file was not uploaded.";
+const PROVENANCE = "Parsed and rule-matched in your browser. The file was not uploaded.";
+
+interface PendingImport {
+  table: RawTable;
+  mapping: ColumnMapping;
+  file: string;
+  kind: "csv" | "xlsx";
+}
 
 export default function Home() {
   const { lines, document, autoAcceptHigh, switches, premiumPercent, comparisonLineIds } = useProjectState();
   const { canUndo, canRedo } = useHistory();
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<View>("review");
+  const [pending, setPending] = useState<PendingImport | null>(null);
   const options = useMemo(() => ({ autoAcceptHigh }), [autoAcceptHigh]);
   const totals = useMemo(() => computeTotals(lines, catalogue, options), [lines, options]);
   const highPending = lines.filter((l) => l.status === "pending" && l.factorId && l.confidence >= HIGH_CONFIDENCE);
@@ -43,12 +53,23 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  async function load(text: string, name: string) {
+  function importTable({ table, mapping, file, kind }: PendingImport) {
+    actions.loadDocument(tableToLines(table, mapping, file, kind, catalogue), { file, provenance: PROVENANCE });
+    setView("review");
+  }
+
+  async function read(file: File | { name: string; text: string }) {
     setError(null);
+    setPending(null);
     try {
-      actions.loadDocument(parseCsv(text, name, catalogue), { file: name, provenance: CSV_PROVENANCE });
+      const kind = /\.xlsx$/i.test(file.name) ? "xlsx" : "csv";
+      const table =
+        file instanceof File && kind === "xlsx" ? await readXlsxTable(file) : readCsvTable(file instanceof File ? await file.text() : file.text);
+      const next = { table, mapping: autoMapping(table.headers), file: file.name, kind } as const;
+      if (missingFields(next.mapping).length > 0) setPending(next);
+      else importTable(next);
     } catch (e) {
-      setError(e instanceof BomParseError ? e.message : "This file could not be read as a CSV.");
+      setError(e instanceof BomParseError ? e.message : "This file could not be read. Upload a CSV or XLSX file.");
     }
   }
 
@@ -66,14 +87,14 @@ export default function Home() {
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <label className="inline-flex cursor-pointer items-center gap-2 rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900">
-          Choose a CSV
+          Choose a CSV or XLSX
           <input
             type="file"
-            accept=".csv,text/csv"
+            accept=".csv,.xlsx,text/csv"
             className="sr-only"
             onChange={async (e) => {
               const f = e.target.files?.[0];
-              if (f) await load(await f.text(), f.name);
+              if (f) await read(f);
               e.target.value = "";
             }}
           />
@@ -82,7 +103,7 @@ export default function Home() {
           className="rounded border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
           onClick={async () => {
             const res = await fetch("/demo/wind-foundation.csv");
-            await load(await res.text(), "wind-foundation.csv");
+            await read({ name: "wind-foundation.csv", text: await res.text() });
           }}
         >
           Load demo
@@ -95,6 +116,18 @@ export default function Home() {
       </div>
       <p className="mt-2 text-sm text-zinc-500">Columns: description, quantity, unit. Optional: section, kg_per_unit, unit_price_eur.</p>
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+      {pending && (
+        <ImportDialog
+          table={pending.table}
+          initial={pending.mapping}
+          fileName={pending.file}
+          onCancel={() => setPending(null)}
+          onImport={(mapping) => {
+            importTable({ ...pending, mapping });
+            setPending(null);
+          }}
+        />
+      )}
 
       {document && (
         <section className="mt-8">
