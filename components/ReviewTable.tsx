@@ -34,9 +34,19 @@ function StatusPill({ line, autoAcceptHigh }: { line: BomLine; autoAcceptHigh: b
   return <span className={`${base} bg-amber-100 text-amber-800`}>Needs review</span>;
 }
 
-export function ReviewTable({ lines, totals, autoAcceptHigh }: { lines: BomLine[]; totals: Totals; autoAcceptHigh: boolean }) {
+export function ReviewTable({
+  projectId,
+  lines,
+  totals,
+  autoAcceptHigh,
+}: {
+  projectId: string;
+  lines: BomLine[];
+  totals: Totals;
+  autoAcceptHigh: boolean;
+}) {
   function decide(line: BomLine, status: BomLine["status"]) {
-    actions.setStatus([line.id], line.status === status ? "pending" : status);
+    actions.setStatus(projectId, [line.id], line.status === status ? "pending" : status);
   }
 
   return (
@@ -65,7 +75,7 @@ export function ReviewTable({ lines, totals, autoAcceptHigh }: { lines: BomLine[
                   className={`${field} font-medium`}
                   defaultValue={line.description}
                   onBlur={(e) => {
-                    if (e.target.value !== line.description) actions.updateLine(line.id, { description: e.target.value });
+                    if (e.target.value !== line.description) actions.updateLine(projectId, line.id, { description: e.target.value });
                   }}
                 />
                 <div className="mt-1 text-xs text-zinc-500">
@@ -74,7 +84,11 @@ export function ReviewTable({ lines, totals, autoAcceptHigh }: { lines: BomLine[
                 </div>
               </td>
               <td className="py-2 pr-3">
-                <NumberField value={line.quantity} label={`Quantity of ${line.description}`} onChange={(quantity) => actions.updateLine(line.id, { quantity })} />
+                <NumberField
+                  value={line.quantity}
+                  label={`Quantity of ${line.description}`}
+                  onChange={(quantity) => actions.updateLine(projectId, line.id, { quantity })}
+                />
               </td>
               <td className="py-2 pr-3">
                 <input
@@ -84,19 +98,23 @@ export function ReviewTable({ lines, totals, autoAcceptHigh }: { lines: BomLine[
                   className={field}
                   defaultValue={line.unit}
                   onBlur={(e) => {
-                    if (e.target.value !== line.unit) actions.updateLine(line.id, { unit: e.target.value });
+                    if (e.target.value !== line.unit) actions.updateLine(projectId, line.id, { unit: e.target.value });
                   }}
                 />
               </td>
               <td className="py-2 pr-3">
-                <NumberField value={line.kgPerUnit} label={`kg per unit of ${line.description}`} onChange={(kgPerUnit) => actions.updateLine(line.id, { kgPerUnit })} />
+                <NumberField
+                  value={line.kgPerUnit}
+                  label={`kg per unit of ${line.description}`}
+                  onChange={(kgPerUnit) => actions.updateLine(projectId, line.id, { kgPerUnit })}
+                />
               </td>
               <td className="py-2 pr-3">
                 <FactorSelect
                   className={field}
                   label={`Factor for ${line.description}`}
                   value={line.factorId}
-                  onChange={(factorId) => actions.updateLine(line.id, { factorId, confidence: 1, matchReason: "Chosen by the reviewer" })}
+                  onChange={(factorId) => actions.updateLine(projectId, line.id, { factorId, confidence: 1, matchReason: "Chosen by the reviewer" })}
                 />
                 <div className="mt-1 text-xs text-zinc-500">
                   {factor && `${factorValue(factor.value)} ${factor.unit}${factor.applicability === "proxy" ? " · proxy" : ""} · `}

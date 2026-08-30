@@ -6,7 +6,17 @@ import { alternativesFor, computeScenario, switchAll, type BomLine, type CalcOpt
 import { factorValue, percent, tonnes } from "@/lib/format";
 import { actions } from "@/lib/store";
 
-export function Alternatives({ lines, switches, options }: { lines: BomLine[]; switches: Switches; options: CalcOptions }) {
+export function Alternatives({
+  projectId,
+  lines,
+  switches,
+  options,
+}: {
+  projectId: string;
+  lines: BomLine[];
+  switches: Switches;
+  options: CalcOptions;
+}) {
   const result = useMemo(() => computeScenario(lines, switches, catalogue, options), [lines, switches, options]);
   const counted = lines
     .map((line, i) => ({ line, base: result.baseline.results[i], after: result.scenario.results[i] }))
@@ -20,7 +30,7 @@ export function Alternatives({ lines, switches, options }: { lines: BomLine[]; s
     const next = { ...switches };
     if (factorId) next[line.id] = factorId;
     else delete next[line.id];
-    actions.setSwitches(next);
+    actions.setSwitches(projectId, next);
   }
 
   return (
@@ -39,14 +49,14 @@ export function Alternatives({ lines, switches, options }: { lines: BomLine[]; s
           <button
             className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
             disabled={Object.keys(possible).length === 0}
-            onClick={() => actions.setSwitches(possible)}
+            onClick={() => actions.setSwitches(projectId, possible)}
           >
             Switch all to lowest ({Object.keys(possible).length})
           </button>
           <button
             className="rounded border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
             disabled={Object.keys(switches).length === 0}
-            onClick={() => actions.setSwitches({})}
+            onClick={() => actions.setSwitches(projectId, {})}
           >
             Clear
           </button>

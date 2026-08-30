@@ -16,11 +16,13 @@ function signed(value: number) {
 }
 
 export function SpendVsActivity({
+  projectId,
   lines,
   options,
   premiumPercent,
   lineIds,
 }: {
+  projectId: string;
   lines: BomLine[];
   options: CalcOptions;
   premiumPercent: number;
@@ -58,7 +60,14 @@ export function SpendVsActivity({
         <span>
           Price premium for the lower-carbon product: <strong className="tabular-nums">{premiumPercent}%</strong>
         </span>
-        <input type="range" min={0} max={50} step={1} value={premiumPercent} onChange={(e) => actions.setPremium(Number(e.target.value))} />
+        <input
+          type="range"
+          min={0}
+          max={50}
+          step={1}
+          value={premiumPercent}
+          onChange={(e) => actions.setPremium(projectId, Number(e.target.value))}
+        />
       </label>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -86,7 +95,9 @@ export function SpendVsActivity({
               <input
                 type="checkbox"
                 checked={selected.includes(line.id)}
-                onChange={(e) => actions.setComparisonLines(e.target.checked ? [...selected, line.id] : selected.filter((id) => id !== line.id))}
+                onChange={(e) =>
+                  actions.setComparisonLines(projectId, e.target.checked ? [...selected, line.id] : selected.filter((id) => id !== line.id))
+                }
               />
               {line.description}
               <span className="text-zinc-500">→ {alternativesFor(line, catalogue)[0].name}</span>
