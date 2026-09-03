@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppHeader } from "@/components/AppHeader";
+import { HatchDefs } from "@/components/Hatch";
+import { themeBootScript } from "@/lib/theme-boot";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Carbon Takeoff",
-  description: "Embodied-carbon screening for bills of materials, with a source for every factor.",
+  title: { default: "Carbon Takeoff", template: "%s · Carbon Takeoff" },
+  description: "Embodied-carbon screening for bills of materials and specifications, with a source for every factor.",
 };
 
 export default function RootLayout({
@@ -23,8 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+      </head>
+      <body className="flex min-h-full flex-col">
+        <HatchDefs />
+        <AppHeader />
+        <div className="flex flex-1 flex-col">{children}</div>
+      </body>
     </html>
   );
 }

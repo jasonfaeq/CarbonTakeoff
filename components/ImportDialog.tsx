@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { FIELD_LABELS, missingFields, REQUIRED_FIELDS, type BomField, type ColumnMapping, type RawTable } from "@/lib/bom/parse";
+import { Icon } from "./Icon";
 
 const FIELDS = Object.keys(FIELD_LABELS) as BomField[];
 
@@ -22,39 +23,42 @@ export function ImportDialog({
   const ref = useRef<HTMLDialogElement>(null);
   const [mapping, setMapping] = useState(initial);
   const missing = missingFields(mapping);
-  const preview = table.rows.filter((r) => r.some((c) => String(c ?? "").trim())).slice(0, 5);
+  const preview = table.rows.filter((r) => r.some((c) => String(c ?? "").trim())).slice(0, 6);
+  const rowCount = table.rows.filter((r) => r.some((c) => String(c ?? "").trim())).length;
 
   useEffect(() => {
     ref.current?.showModal();
   }, []);
 
   function set(column: number, field: BomField | null) {
-    // One column per field: taking a field away from another column keeps the mapping unambiguous.
+    // One column per field: taking a field for this column frees it everywhere else.
     setMapping((m) => m.map((f, i) => (i === column ? field : f === field ? null : f)));
   }
 
   return (
-    <dialog
-      ref={ref}
-      onCancel={onCancel}
-      className="m-auto w-[min(56rem,calc(100vw-2rem))] rounded-lg border border-zinc-200 bg-white p-0 text-zinc-900 shadow-xl backdrop:bg-black/40 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
-    >
-      <div className="border-b border-zinc-200 px-5 py-4 dark:border-zinc-800">
-        <h2 className="text-lg font-semibold">Which column is which?</h2>
-        <p className="mt-1 text-sm text-zinc-500">
-          {fileName}: some headers were not recognised. Description, quantity and unit are needed; the rest is optional.
-        </p>
+    <dialog ref={ref} onCancel={onCancel} className="dialog w-[min(60rem,calc(100vw-2rem))]">
+      <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-5">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight">Which column is which?</h2>
+          <p className="mt-1 text-sm text-ink-2">
+            <span className="font-medium text-ink">{fileName}</span>, {rowCount} rows. Some headers were not recognised. Description, quantity and
+            unit are needed; the rest is optional.
+          </p>
+        </div>
+        <button className="btn btn-ghost btn-icon" onClick={onCancel} aria-label="Close">
+          <Icon name="x" />
+        </button>
       </div>
-      <div className="max-h-[60vh] overflow-auto px-5 py-4">
+      <div className="max-h-[58vh] overflow-auto px-6 py-4">
         <table className="w-full text-left text-sm">
           <thead>
             <tr>
               {table.headers.map((h, i) => (
-                <th key={i} className="min-w-36 border-b border-zinc-200 pb-2 pr-2 align-bottom font-normal dark:border-zinc-800">
-                  <div className="mb-1 truncate text-xs text-zinc-500">{h || `Column ${i + 1}`}</div>
+                <th key={i} className="min-w-40 pr-2 pb-3 align-bottom font-normal">
+                  <div className="mb-1.5 truncate text-xs text-ink-3">{h || `Column ${i + 1}`}</div>
                   <select
                     aria-label={`Field for column ${h || i + 1}`}
-                    className="w-full rounded border border-zinc-300 bg-transparent px-2 py-1 dark:border-zinc-700"
+                    className="field field-sm"
                     value={mapping[i] ?? ""}
                     onChange={(e) => set(i, (e.target.value || null) as BomField | null)}
                   >
@@ -72,9 +76,9 @@ export function ImportDialog({
           </thead>
           <tbody>
             {preview.map((row, r) => (
-              <tr key={r} className="border-b border-zinc-100 dark:border-zinc-900">
+              <tr key={r} className="border-t border-line">
                 {table.headers.map((_, c) => (
-                  <td key={c} className={`py-1.5 pr-2 ${mapping[c] ? "" : "text-zinc-400"}`}>
+                  <td key={c} className={`py-2 pr-2 ${mapping[c] ? "text-ink" : "text-ink-3"}`}>
                     {String(row[c] ?? "")}
                   </td>
                 ))}
@@ -83,19 +87,15 @@ export function ImportDialog({
           </tbody>
         </table>
       </div>
-      <div className="flex items-center justify-between gap-3 border-t border-zinc-200 px-5 py-3 dark:border-zinc-800">
-        <span className="text-sm text-zinc-500">
-          {missing.length > 0 ? `Still needed: ${missing.map((f) => FIELD_LABELS[f]).join(", ")}` : "Ready."}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-surface-2/50 px-6 py-4">
+        <span className={`text-sm ${missing.length ? "text-warn" : "text-good"}`}>
+          {missing.length > 0 ? `Still needed: ${missing.map((f) => FIELD_LABELS[f]).join(", ")}` : `Ready to import ${rowCount} rows.`}
         </span>
         <div className="flex gap-2">
-          <button className="rounded border border-zinc-300 px-3 py-1.5 text-sm dark:border-zinc-700" onClick={onCancel}>
+          <button className="btn" onClick={onCancel}>
             Cancel
           </button>
-          <button
-            className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
-            disabled={missing.length > 0}
-            onClick={() => onImport(mapping)}
-          >
+          <button className="btn btn-primary" disabled={missing.length > 0} onClick={() => onImport(mapping)}>
             Import
           </button>
         </div>

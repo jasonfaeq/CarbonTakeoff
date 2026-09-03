@@ -5,54 +5,77 @@ import { useRouter } from "next/navigation";
 import { catalogue } from "@/lib/catalogue";
 import { computeTotals } from "@/lib/engine";
 import { timeAgo, tonnes } from "@/lib/format";
+import { groupStyle } from "@/lib/groups";
 import { actions, useHydrated, useProjects } from "@/lib/store";
+import { Icon } from "./Icon";
 
 export function ProjectList() {
   const projects = useProjects();
   const hydrated = useHydrated();
   const router = useRouter();
-  if (!hydrated) return null;
-  if (projects.length === 0) return <p className="text-sm text-zinc-500">No projects yet. Upload a bill of materials or load the demo.</p>;
+  if (!hydrated) return <div className="h-36 animate-pulse rounded-2xl bg-surface-2" />;
+  if (projects.length === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-line-2 px-6 py-10 text-center text-sm text-ink-3">
+        No projects yet. Upload a bill of materials or load the demo.
+      </div>
+    );
+  }
 
   const sorted = [...projects].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   return (
-    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {sorted.map((p) => {
         const totals = computeTotals(p.lines, catalogue, { autoAcceptHigh: p.autoAcceptHigh });
+        const decided = p.lines.length - totals.pendingLines;
         return (
-          <li
-            key={p.id}
-            className="group relative rounded-lg border border-zinc-200 p-4 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
-          >
-            <Link href={`/project/${p.id}`} className="block font-medium after:absolute after:inset-0">
-              {p.name}
-            </Link>
-            <p className="mt-0.5 truncate text-xs text-zinc-500">
-              {p.document?.file ?? "No document"} · {p.lines.length} lines · edited {timeAgo(p.updatedAt)}
-            </p>
-            <p className="mt-3 text-sm">
-              <span className="text-xl font-semibold tabular-nums">{tonnes(totals.kgCO2e)}</span> tCO₂e
-              {totals.pendingLines > 0 && <span className="text-zinc-500"> · {totals.pendingLines} to review</span>}
-            </p>
-            <div className="relative z-10 mt-3 flex gap-3 text-xs text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
-              <button
-                className="hover:text-zinc-900 dark:hover:text-zinc-100"
-                onClick={() => {
-                  const id = actions.duplicateProject(p.id);
-                  if (id) router.push(`/project/${id}`);
-                }}
-              >
-                Duplicate
-              </button>
-              <button
-                className="hover:text-red-600"
-                onClick={() => {
-                  if (window.confirm(`Delete "${p.name}"? This cannot be undone.`)) actions.deleteProject(p.id);
-                }}
-              >
-                Delete
-              </button>
+          <li key={p.id} className="card group relative flex flex-col p-5 transition-shadow hover:shadow-md">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <Link href={`/project/${p.id}`} className="block truncate font-semibold after:absolute after:inset-0">
+                  {p.name}
+                </Link>
+                <p className="mt-0.5 truncate text-xs text-ink-3">
+                  {p.document?.file ?? "No document"} · edited {timeAgo(p.updatedAt)}
+                </p>
+              </div>
+              <div className="relative z-10 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                <button
+                  className="btn btn-ghost btn-sm btn-icon"
+                  title="Duplicate"
+                  aria-label={`Duplicate ${p.name}`}
+                  onClick={() => {
+                    const id = actions.duplicateProject(p.id);
+                    if (id) router.push(`/project/${id}`);
+                  }}
+                >
+                  <Icon name="copy" size={15} />
+                </button>
+                <button
+                  className="btn btn-ghost btn-sm btn-icon btn-danger"
+                  title="Delete"
+                  aria-label={`Delete ${p.name}`}
+                  onClick={() => {
+                    if (window.confirm(`Delete "${p.name}"? This cannot be undone.`)) actions.deleteProject(p.id);
+                  }}
+                >
+                  <Icon name="trash" size={15} />
+                </button>
+              </div>
             </div>
+            <div className="mt-5 flex items-baseline gap-1.5">
+              <span className="num text-[28px] leading-none font-semibold tracking-tight">{tonnes(totals.kgCO2e)}</span>
+              <span className="text-sm text-ink-3">tCO₂e</span>
+            </div>
+            <div className="mt-4 flex h-2 overflow-hidden rounded-full bg-surface-3" aria-hidden="true">
+              {totals.byGroup.map((g) => (
+                <span key={g.key} style={{ width: `${(g.kgCO2e / (totals.kgCO2e || 1)) * 100}%`, background: groupStyle(g.key).color }} />
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-ink-3">
+              {p.lines.length} lines · {decided} decided
+              {totals.pendingLines > 0 && <span className="text-warn"> · {totals.pendingLines} to review</span>}
+            </p>
           </li>
         );
       })}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ProjectWorkspace } from "@/components/ProjectWorkspace";
+import { EmptyState } from "@/components/ui";
 import { useHydrated, useProject } from "@/lib/store";
 
 export default function ProjectPage() {
@@ -12,12 +13,18 @@ export default function ProjectPage() {
   if (!hydrated) return null;
   if (!project) {
     return (
-      <main className="mx-auto w-full max-w-6xl px-6 py-12">
-        <h1 className="text-2xl font-semibold">Project not found</h1>
-        <p className="mt-2 text-zinc-500">It may have been deleted, or it was saved in another browser.</p>
-        <Link href="/" className="mt-4 inline-block underline underline-offset-4">
-          All projects
-        </Link>
+      <main className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
+        <EmptyState
+          icon="folder"
+          title="Project not found"
+          action={
+            <Link href="/" className="btn btn-primary">
+              All projects
+            </Link>
+          }
+        >
+          It may have been deleted, or it was saved in another browser. Projects live in the browser they were made in.
+        </EmptyState>
       </main>
     );
   }

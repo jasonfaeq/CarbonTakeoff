@@ -2,13 +2,12 @@
 
 import { parseNumber } from "@/lib/bom/parse";
 import { catalogue } from "@/lib/catalogue";
-import { confidenceLabel, isCounted, normaliseUnit, type BomLine, type Totals } from "@/lib/engine";
+import { normaliseUnit, type BomLine, type Totals } from "@/lib/engine";
 import { factorValue, tonnes } from "@/lib/format";
 import { actions } from "@/lib/store";
 import { FactorSelect } from "./FactorSelect";
-
-const field =
-  "w-full rounded border border-zinc-200 bg-transparent px-2 py-1 text-sm focus:border-zinc-500 focus:outline-none aria-[invalid=true]:border-red-500 dark:border-zinc-700";
+import { Icon } from "./Icon";
+import { ConfidenceBadge, FactorBadges, StatusBadge, Swatch } from "./ui";
 
 function NumberField({ value, label, onChange }: { value: number | null | undefined; label: string; onChange: (value: number | null) => void }) {
   return (
@@ -16,22 +15,15 @@ function NumberField({ value, label, onChange }: { value: number | null | undefi
       key={String(value ?? "")}
       aria-label={label}
       inputMode="decimal"
-      className={`${field} text-right tabular-nums`}
+      className="field field-sm field-quiet num text-right"
       defaultValue={value ?? ""}
+      placeholder="–"
       onBlur={(e) => {
         const next = parseNumber(e.target.value);
         if (next !== (value ?? null)) onChange(next);
       }}
     />
   );
-}
-
-function StatusPill({ line, autoAcceptHigh }: { line: BomLine; autoAcceptHigh: boolean }) {
-  const base = "inline-block rounded-full px-2 py-0.5 text-xs font-medium";
-  if (line.status === "accepted") return <span className={`${base} bg-emerald-100 text-emerald-800`}>Accepted</span>;
-  if (line.status === "rejected") return <span className={`${base} bg-zinc-200 text-zinc-600`}>Rejected</span>;
-  if (isCounted(line, { autoAcceptHigh })) return <span className={`${base} bg-emerald-50 text-emerald-700`}>Auto-accepted</span>;
-  return <span className={`${base} bg-amber-100 text-amber-800`}>Needs review</span>;
 }
 
 export function ReviewTable({
@@ -45,108 +37,131 @@ export function ReviewTable({
   totals: Totals;
   autoAcceptHigh: boolean;
 }) {
+  const options = { autoAcceptHigh };
   function decide(line: BomLine, status: BomLine["status"]) {
     actions.setStatus(projectId, [line.id], line.status === status ? "pending" : status);
   }
 
   return (
-    <table className="mt-4 w-full text-left text-sm">
-      <thead className="border-b border-zinc-300 text-zinc-500 dark:border-zinc-700">
-        <tr>
-          <th className="py-2 pr-3 font-medium">Line</th>
-          <th className="w-24 py-2 pr-3 font-medium">Quantity</th>
-          <th className="w-20 py-2 pr-3 font-medium">Unit</th>
-          <th className="w-20 py-2 pr-3 font-medium">kg/unit</th>
-          <th className="py-2 pr-3 font-medium">Factor</th>
-          <th className="w-20 py-2 pr-3 text-right font-medium">tCO₂e</th>
-          <th className="w-44 py-2 font-medium">Decision</th>
-        </tr>
-      </thead>
-      <tbody>
-        {lines.map((line, i) => {
-          const factor = line.factorId ? catalogue.byId.get(line.factorId) : undefined;
-          const result = totals.results[i];
-          return (
-            <tr key={line.id} className={`border-b border-zinc-100 align-top dark:border-zinc-800 ${line.status === "rejected" ? "opacity-50" : ""}`}>
-              <td className="py-2 pr-3">
-                <input
-                  key={line.description}
-                  aria-label={`Description of ${line.description}`}
-                  className={`${field} font-medium`}
-                  defaultValue={line.description}
-                  onBlur={(e) => {
-                    if (e.target.value !== line.description) actions.updateLine(projectId, line.id, { description: e.target.value });
-                  }}
-                />
-                <div className="mt-1 text-xs text-zinc-500">
-                  {line.section ? `${line.section} · ` : ""}
-                  {line.source.ref}: <span className="font-mono">{line.source.snippet}</span>
-                </div>
-              </td>
-              <td className="py-2 pr-3">
-                <NumberField
-                  value={line.quantity}
-                  label={`Quantity of ${line.description}`}
-                  onChange={(quantity) => actions.updateLine(projectId, line.id, { quantity })}
-                />
-              </td>
-              <td className="py-2 pr-3">
-                <input
-                  key={line.unit}
-                  aria-label={`Unit of ${line.description}`}
-                  aria-invalid={!normaliseUnit(line.unit)}
-                  className={field}
-                  defaultValue={line.unit}
-                  onBlur={(e) => {
-                    if (e.target.value !== line.unit) actions.updateLine(projectId, line.id, { unit: e.target.value });
-                  }}
-                />
-              </td>
-              <td className="py-2 pr-3">
-                <NumberField
-                  value={line.kgPerUnit}
-                  label={`kg per unit of ${line.description}`}
-                  onChange={(kgPerUnit) => actions.updateLine(projectId, line.id, { kgPerUnit })}
-                />
-              </td>
-              <td className="py-2 pr-3">
-                <FactorSelect
-                  className={field}
-                  label={`Factor for ${line.description}`}
-                  value={line.factorId}
-                  onChange={(factorId) => actions.updateLine(projectId, line.id, { factorId, confidence: 1, matchReason: "Chosen by the reviewer" })}
-                />
-                <div className="mt-1 text-xs text-zinc-500">
-                  {factor && `${factorValue(factor.value)} ${factor.unit}${factor.applicability === "proxy" ? " · proxy" : ""} · `}
-                  {line.matchReason} · {confidenceLabel(line.confidence)} confidence
-                </div>
-              </td>
-              <td className="py-2 pr-3 text-right tabular-nums">
-                {result.kgCO2e !== null ? tonnes(result.kgCO2e) : <span className="text-xs text-red-600">{result.error}</span>}
-              </td>
-              <td className="py-2">
-                <StatusPill line={line} autoAcceptHigh={autoAcceptHigh} />
-                <div className="mt-1 flex gap-1">
-                  <button
-                    className="rounded border border-zinc-300 px-2 py-0.5 text-xs aria-pressed:bg-emerald-600 aria-pressed:text-white dark:border-zinc-700"
-                    aria-pressed={line.status === "accepted"}
-                    onClick={() => decide(line, "accepted")}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    className="rounded border border-zinc-300 px-2 py-0.5 text-xs aria-pressed:bg-zinc-700 aria-pressed:text-white dark:border-zinc-700"
-                    aria-pressed={line.status === "rejected"}
-                    onClick={() => decide(line, "rejected")}
-                  >
-                    Reject
-                  </button>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="card overflow-x-auto">
+      <table className="data-table min-w-[960px]">
+        <thead>
+          <tr>
+            <th className="min-w-[17rem]">Line</th>
+            <th className="right w-24">Quantity</th>
+            <th className="w-24">Unit</th>
+            <th className="right w-24">kg / unit</th>
+            <th className="min-w-[19rem]">Factor</th>
+            <th className="right w-24">tCO₂e</th>
+            <th className="w-40">Decision</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lines.map((line, i) => {
+            const factor = line.factorId ? catalogue.byId.get(line.factorId) : undefined;
+            const result = totals.results[i];
+            return (
+              <tr key={line.id} className={line.status === "rejected" ? "opacity-50" : ""}>
+                <td>
+                  <input
+                    key={line.description}
+                    aria-label={`Description of ${line.description}`}
+                    className="field field-sm field-quiet -ml-2 font-medium"
+                    defaultValue={line.description}
+                    onBlur={(e) => {
+                      if (e.target.value !== line.description) actions.updateLine(projectId, line.id, { description: e.target.value });
+                    }}
+                  />
+                  <div className="mt-1 max-w-[22rem] truncate text-xs text-ink-3" title={line.source.snippet}>
+                    {line.section && <span className="text-ink-2">{line.section} · </span>}
+                    {line.source.ref}: <span className="font-mono">{line.source.snippet}</span>
+                  </div>
+                </td>
+                <td>
+                  <NumberField
+                    value={line.quantity}
+                    label={`Quantity of ${line.description}`}
+                    onChange={(quantity) => actions.updateLine(projectId, line.id, { quantity })}
+                  />
+                </td>
+                <td>
+                  <input
+                    key={line.unit}
+                    aria-label={`Unit of ${line.description}`}
+                    aria-invalid={!normaliseUnit(line.unit)}
+                    className="field field-sm field-quiet"
+                    defaultValue={line.unit}
+                    onBlur={(e) => {
+                      if (e.target.value !== line.unit) actions.updateLine(projectId, line.id, { unit: e.target.value });
+                    }}
+                  />
+                </td>
+                <td>
+                  <NumberField
+                    value={line.kgPerUnit}
+                    label={`kg per unit of ${line.description}`}
+                    onChange={(kgPerUnit) => actions.updateLine(projectId, line.id, { kgPerUnit })}
+                  />
+                </td>
+                <td>
+                  <div className="flex items-center gap-2">
+                    <Swatch group={factor?.group} />
+                    <FactorSelect
+                      label={`Factor for ${line.description}`}
+                      value={line.factorId}
+                      onChange={(factorId) =>
+                        actions.updateLine(projectId, line.id, { factorId, confidence: 1, matchReason: "Chosen by the reviewer" })
+                      }
+                    />
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs text-ink-3">
+                    <ConfidenceBadge confidence={line.confidence} />
+                    {factor && <FactorBadges factor={factor} />}
+                    <span>{line.matchReason}</span>
+                    {factor && (
+                      <span className="num">
+                        · {factorValue(factor.value)} {factor.unit.replace("CO2e", "CO₂e")}
+                      </span>
+                    )}
+                  </div>
+                </td>
+                <td className="right num font-medium">
+                  {result.kgCO2e !== null ? (
+                    <span className={result.counted ? "" : "text-ink-3"}>{tonnes(result.kgCO2e)}</span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-xs font-normal text-bad">
+                      <Icon name="alert" size={13} />
+                      {result.error}
+                    </span>
+                  )}
+                </td>
+                <td>
+                  <StatusBadge line={line} options={options} />
+                  <div className="mt-1.5 flex gap-1">
+                    <button
+                      className="btn btn-sm"
+                      aria-pressed={line.status === "accepted"}
+                      aria-label={`Accept ${line.description}`}
+                      onClick={() => decide(line, "accepted")}
+                    >
+                      <Icon name="check" size={14} /> Accept
+                    </button>
+                    <button
+                      className="btn btn-sm btn-icon"
+                      aria-pressed={line.status === "rejected"}
+                      aria-label={`Reject ${line.description}`}
+                      title="Reject"
+                      onClick={() => decide(line, "rejected")}
+                    >
+                      <Icon name="x" size={14} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }

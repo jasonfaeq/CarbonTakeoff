@@ -1,20 +1,35 @@
 import { NewProject } from "@/components/NewProject";
 import { ProjectList } from "@/components/ProjectList";
+import { PlaceholderNotice } from "@/components/ui";
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight">Carbon Takeoff</h1>
-      <p className="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-400">
-        Turn a bill of materials into an embodied-carbon estimate. Every line is matched to a factor with a stated source, and only lines a person
-        accepts count towards the total.
-      </p>
-      <div className="mt-8">
+    <main className="mx-auto w-full max-w-[1400px] px-4 pt-10 pb-16 sm:px-6">
+      <section className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-end">
+        <div>
+          <p className="eyebrow">Embodied-carbon takeoff</p>
+          <h1 className="mt-3 max-w-2xl text-[clamp(32px,4.6vw,52px)] leading-[1.05] font-semibold tracking-[-0.03em]">
+            From a bill of materials to a sourced carbon number, <span className="text-brand">checked line by line.</span>
+          </h1>
+        </div>
+        <p className="max-w-xl text-[15px] text-ink-2 lg:justify-self-end">
+          Upload a BOM, review how every line was matched, and see the total, the hotspots and the lower-carbon alternatives. Every factor shows its
+          source. Nothing counts until a person accepts it.
+        </p>
+      </section>
+      <div className="mt-6">
+        <PlaceholderNotice />
+      </div>
+      <div className="mt-6">
         <NewProject />
       </div>
-      <h2 className="mt-10 mb-3 font-medium">Your projects</h2>
-      <ProjectList />
-      <p className="mt-10 text-xs text-zinc-500">Projects are saved in this browser only.</p>
+      <section className="mt-12">
+        <div className="mb-4 flex items-baseline justify-between">
+          <h2 className="text-lg font-semibold tracking-tight">Your projects</h2>
+          <span className="text-xs text-ink-3">Saved in this browser only</span>
+        </div>
+        <ProjectList />
+      </section>
     </main>
   );
 }
