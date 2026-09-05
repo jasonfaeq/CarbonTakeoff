@@ -32,7 +32,7 @@ export function NewProject() {
   function create({ table, mapping, file, kind }: PendingImport) {
     const lines = tableToLines(table, mapping, file, kind, catalogue);
     const id = actions.createProject({ name: nameFromFile(file), document: { file, provenance: PROVENANCE }, lines });
-    router.push(`/project/${id}`);
+    router.push(`/project/${id}/lines`);
   }
 
   async function read(file: File | { name: string; text: string }) {

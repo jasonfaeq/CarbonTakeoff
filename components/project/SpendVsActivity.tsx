@@ -4,8 +4,8 @@ import { catalogue, spendData } from "@/lib/catalogue";
 import { alternativesFor, compareAccounting, defaultComparisonLines, isCounted, type BomLine, type CalcOptions } from "@/lib/engine";
 import { tonnes } from "@/lib/format";
 import { actions } from "@/lib/store";
-import { Icon } from "./Icon";
-import { EmptyState } from "./ui";
+import { Icon } from "../Icon";
+import { EmptyState } from "../ui";
 
 function change(before: number, after: number) {
   if (before === 0) return 0;

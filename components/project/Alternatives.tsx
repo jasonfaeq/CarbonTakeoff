@@ -5,8 +5,8 @@ import { catalogue } from "@/lib/catalogue";
 import { alternativesFor, computeScenario, switchAll, type BomLine, type CalcOptions, type Switches } from "@/lib/engine";
 import { factorValue, percent, tonnes } from "@/lib/format";
 import { actions } from "@/lib/store";
-import { Icon } from "./Icon";
-import { EmptyState, Kpi, Swatch } from "./ui";
+import { Icon } from "../Icon";
+import { EmptyState, Kpi, Swatch } from "../ui";
 
 export function Alternatives({
   projectId,

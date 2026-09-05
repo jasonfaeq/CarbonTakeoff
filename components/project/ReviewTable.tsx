@@ -6,8 +6,8 @@ import { normaliseUnit, type BomLine, type Totals } from "@/lib/engine";
 import { factorValue, tonnes } from "@/lib/format";
 import { actions } from "@/lib/store";
 import { FactorSelect } from "./FactorSelect";
-import { Icon } from "./Icon";
-import { ConfidenceBadge, FactorBadges, StatusBadge, Swatch } from "./ui";
+import { Icon } from "../Icon";
+import { ConfidenceBadge, FactorBadges, StatusBadge, Swatch } from "../ui";
 
 function NumberField({ value, label, onChange }: { value: number | null | undefined; label: string; onChange: (value: number | null) => void }) {
   return (
@@ -48,9 +48,9 @@ export function ReviewTable({
         <thead>
           <tr>
             <th className="min-w-[17rem]">Line</th>
-            <th className="right w-24">Quantity</th>
-            <th className="w-24">Unit</th>
-            <th className="right w-24">kg / unit</th>
+            <th className="right min-w-[6.5rem]">Quantity</th>
+            <th className="min-w-[5.5rem]">Unit</th>
+            <th className="right min-w-[6rem]">kg / unit</th>
             <th className="min-w-[19rem]">Factor</th>
             <th className="right w-24">tCO₂e</th>
             <th className="w-40">Decision</th>

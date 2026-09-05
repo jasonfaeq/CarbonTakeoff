@@ -4,7 +4,7 @@ import { catalogue } from "@/lib/catalogue";
 import { type BomLine, type Totals } from "@/lib/engine";
 import { percent, tonnes } from "@/lib/format";
 import { groupStyle } from "@/lib/groups";
-import { EmptyState, Kpi, Swatch } from "./ui";
+import { EmptyState, Kpi, Swatch } from "../ui";
 
 export function Results({ lines, totals }: { lines: BomLine[]; totals: Totals }) {
   if (totals.countedLines === 0) {
