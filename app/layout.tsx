@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppFooter } from "@/components/AppFooter";
 import { AppHeader } from "@/components/AppHeader";
 import { HatchDefs } from "@/components/Hatch";
 import { themeBootScript } from "@/lib/theme-boot";
@@ -17,6 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: { default: "Carbon Takeoff", template: "%s · Carbon Takeoff" },
+  authors: [{ name: "Jason Faeq" }],
   description: "Embodied-carbon screening for bills of materials and specifications, with a source for every factor.",
 };
 
@@ -34,6 +36,7 @@ export default function RootLayout({
         <HatchDefs />
         <AppHeader />
         <div className="flex flex-1 flex-col">{children}</div>
+        <AppFooter />
       </body>
     </html>
   );
