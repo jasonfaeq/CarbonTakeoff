@@ -8,6 +8,8 @@ export interface BarDatum {
   label?: string;
   value: number;
   group?: string;
+  /** Overrides the group colour, and drops the hatch swatch. */
+  color?: string;
   detail?: string;
 }
 
@@ -35,13 +37,13 @@ export function BarList({
         const content = (
           <>
             <span className="flex min-w-0 items-center gap-2">
-              <Swatch group={d.group ?? d.key} />
+              {d.color ? <span className="swatch" style={{ background: d.color }} /> : <Swatch group={d.group ?? d.key} />}
               <span className="truncate">{d.label ?? d.key}</span>
             </span>
             <span className="relative h-2 overflow-hidden rounded-full bg-surface-3">
               <span
                 className="absolute inset-y-0 left-0 rounded-full transition-[width] duration-300"
-                style={{ width: `${(d.value / max) * 100}%`, background: groupStyle(d.group ?? d.key).color }}
+                style={{ width: `${(d.value / max) * 100}%`, background: d.color ?? groupStyle(d.group ?? d.key).color }}
               />
             </span>
             <span className="num text-right whitespace-nowrap">
