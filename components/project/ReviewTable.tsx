@@ -8,6 +8,7 @@ import { actions } from "@/lib/store";
 import { FactorSelect } from "./FactorSelect";
 import { Icon } from "../Icon";
 import { ConfidenceBadge, FactorBadges, StatusBadge, Swatch } from "../ui";
+import { useCurrentProject } from "./context";
 
 function NumberField({ value, label, onChange }: { value: number | null | undefined; label: string; onChange: (value: number | null) => void }) {
   return (
@@ -38,6 +39,7 @@ export function ReviewTable({
   autoAcceptHigh: boolean;
 }) {
   const options = { autoAcceptHigh };
+  const { openLine } = useCurrentProject();
   function decide(line: BomLine, status: BomLine["status"]) {
     actions.setStatus(projectId, [line.id], line.status === status ? "pending" : status);
   }
@@ -72,10 +74,17 @@ export function ReviewTable({
                       if (e.target.value !== line.description) actions.updateLine(projectId, line.id, { description: e.target.value });
                     }}
                   />
-                  <div className="mt-1 max-w-[22rem] truncate text-xs text-ink-3" title={line.source.snippet}>
-                    {line.section && <span className="text-ink-2">{line.section} · </span>}
-                    {line.source.ref}: <span className="font-mono">{line.source.snippet}</span>
-                  </div>
+                  <button
+                    className="group mt-1 flex max-w-[22rem] items-center gap-1 text-left text-xs text-ink-3 hover:text-ink"
+                    title="Show the working, the factor's source and the alternatives"
+                    onClick={() => openLine(line.id)}
+                  >
+                    <span className="truncate">
+                      {line.section && <span className="text-ink-2">{line.section} · </span>}
+                      {line.source.ref}: <span className="font-mono">{line.source.snippet}</span>
+                    </span>
+                    <Icon name="chevron-right" size={13} className="opacity-0 transition-opacity group-hover:opacity-100" />
+                  </button>
                 </td>
                 <td>
                   <NumberField

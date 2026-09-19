@@ -536,6 +536,26 @@ body {
     animation: rise 180ms ease-out;
   }
 
+  dialog.drawer {
+    margin: 0 0 0 auto;
+    padding: 0;
+    width: min(36rem, 100vw);
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: 0;
+    border-left: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--shadow-lg);
+  }
+  dialog.drawer::backdrop {
+    background: rgb(12 15 19 / 0.32);
+  }
+  dialog.drawer[open] {
+    animation: slide-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
   .swatch {
     display: inline-block;
     width: 0.75rem;
@@ -553,6 +573,13 @@ body {
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0.4;
+    transform: translateX(32px);
   }
 }
 

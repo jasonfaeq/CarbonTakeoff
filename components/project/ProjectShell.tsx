@@ -8,6 +8,7 @@ import { actions, useHistory } from "@/lib/store";
 import { Icon, type IconName } from "../Icon";
 import { PlaceholderNotice } from "../ui";
 import { useCurrentProject } from "./context";
+import { LineDrawer } from "./LineDrawer";
 
 interface NavItem {
   href: string;
@@ -161,6 +162,7 @@ export function ProjectShell({ children }: { children: ReactNode }) {
         </div>
         <div className="mt-5">{children}</div>
       </div>
+      <LineDrawer />
     </div>
   );
 }

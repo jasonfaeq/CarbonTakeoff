@@ -8,6 +8,9 @@ export interface ProjectContextValue {
   project: Project;
   options: CalcOptions;
   totals: Totals;
+  /** The line shown in the detail drawer, if any. */
+  openLineId: string | null;
+  openLine: (lineId: string | null) => void;
 }
 
 const ProjectContext = createContext<ProjectContextValue | null>(null);

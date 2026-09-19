@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { ProjectProvider } from "@/components/project/context";
 import { ProjectShell } from "@/components/project/ProjectShell";
 import { EmptyState } from "@/components/ui";
@@ -14,6 +14,7 @@ export default function ProjectLayout({ children }: { children: ReactNode }) {
   const { id } = useParams<{ id: string }>();
   const project = useProject(id);
   const hydrated = useHydrated();
+  const [openLineId, openLine] = useState<string | null>(null);
   const autoAcceptHigh = project?.autoAcceptHigh ?? true;
   const options = useMemo(() => ({ autoAcceptHigh }), [autoAcceptHigh]);
   const lines = project?.lines;
@@ -38,7 +39,7 @@ export default function ProjectLayout({ children }: { children: ReactNode }) {
     );
   }
   return (
-    <ProjectProvider value={{ project, options, totals }}>
+    <ProjectProvider value={{ project, options, totals, openLineId, openLine }}>
       <ProjectShell>{children}</ProjectShell>
     </ProjectProvider>
   );

@@ -40,7 +40,7 @@ function InsightCard({ insight, base }: { insight: Insight; base: string }) {
 }
 
 export function Overview() {
-  const { project, totals, options } = useCurrentProject();
+  const { project, totals, options, openLine } = useCurrentProject();
   const { lines } = project;
   const [group, setGroup] = useState<string | null>(null);
   const insights = useMemo(() => buildInsights(lines, totals, catalogue, options), [lines, totals, options]);
@@ -174,7 +174,7 @@ export function Overview() {
             <span className="text-xs text-ink-3">Area is carbon. {group ? `Showing ${group}.` : "Pick a material to filter."}</span>
           </div>
           <div className="mt-4">
-            <Treemap data={tiles} format={(v) => `${tonnes(v)} t`} />
+            <Treemap data={tiles} format={(v) => `${tonnes(v)} t`} onSelect={openLine} />
           </div>
         </section>
 
@@ -185,7 +185,10 @@ export function Overview() {
               const share = (r.kgCO2e! / totals.kgCO2e) * 100;
               return (
                 <li key={r.lineId}>
-                  <div className="grid grid-cols-[1.25rem_1fr_auto] items-center gap-3">
+                  <button
+                    className="grid w-full grid-cols-[1.25rem_1fr_auto] items-center gap-3 text-left hover:text-brand"
+                    onClick={() => openLine(r.lineId)}
+                  >
                     <span className="num text-ink-3">{i + 1}</span>
                     <span className="flex min-w-0 items-center gap-2">
                       <Swatch group={groupOf(r.factorId)} />
@@ -194,7 +197,7 @@ export function Overview() {
                     <span className="num">
                       {tonnes(r.kgCO2e!)} t <span className="text-ink-3">· {Math.round(share)}%</span>
                     </span>
-                  </div>
+                  </button>
                   <div className="meter mt-1.5 ml-8">
                     <span className="bg-ink-3" style={{ width: `${share}%` }} />
                   </div>
