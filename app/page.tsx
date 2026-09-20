@@ -1,3 +1,4 @@
+import { DemoGallery } from "@/components/DemoGallery";
 import { NewProject } from "@/components/NewProject";
 import { ProjectList } from "@/components/ProjectList";
 import { PlaceholderNotice } from "@/components/ui";
@@ -23,6 +24,13 @@ export default function Home() {
       <div className="mt-6">
         <NewProject />
       </div>
+      <section className="mt-12">
+        <div className="mb-4 flex items-baseline justify-between">
+          <h2 className="text-lg font-semibold tracking-tight">Demo projects</h2>
+          <span className="text-xs text-ink-3">Synthetic data</span>
+        </div>
+        <DemoGallery />
+      </section>
       <section className="mt-12">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-lg font-semibold tracking-tight">Your projects</h2>

@@ -46,6 +46,29 @@ describe("matchFactor", () => {
     expect(matchFactor("Schalung Holz").factorId).toBe("wood-primary");
   });
 
+  it("matches building materials", () => {
+    expect(matchFactor("Clay facing bricks").factorId).toBe("bricks");
+    expect(matchFactor("Cement mortar for brickwork").factorId).toBe("mortar-cement");
+    expect(matchFactor("Concrete blocks for internal walls").factorId).toBe("concrete-blocks");
+    expect(matchFactor("Mineral wool cavity insulation").factorId).toBe("insulation");
+    expect(matchFactor("Plasterboard 12.5 mm").factorId).toBe("plasterboard");
+    expect(matchFactor("Double glazed units").factorId).toBe("glass");
+    expect(matchFactor("Aluminium window frames").factorId).toBe("aluminium-section");
+    expect(matchFactor("LDPE damp-proof membrane").factorId).toBe("ldpe-primary");
+    expect(matchFactor("Sand-cement screed").factorId).toBe("mortar-cement");
+  });
+
+  it("does not take every mention of blocks or insulation literally", () => {
+    expect(matchFactor("Thrust blocks concrete C25/30").factorId).toBe("concrete-c25-30");
+    expect(matchFactor("XLPE insulated MV cable, aluminium conductor").factorId).toBe("aluminium-primary");
+    expect(matchFactor("Transformer oil top-up").factorId).toBe("mineral-oil-primary");
+  });
+
+  it("tells recycled asphalt from new", () => {
+    expect(matchFactor("Recycled asphalt planings reused in base").factorId).toBe("asphalt-recycled");
+    expect(matchFactor("Asphalt surface course SMA 10").factorId).toBe("asphalt-primary");
+  });
+
   it("says so when nothing matches", () => {
     const m = matchFactor("Site welfare cabin hire");
     expect(m.factorId).toBeNull();

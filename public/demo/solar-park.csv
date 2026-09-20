@@ -1,0 +1,25 @@
+# SYNTHETIC DEMO DATA. Made up for Carbon Takeoff: a 12 MWp ground-mounted solar park. Quantities are illustrative and the prices are invented.
+section,description,quantity,unit,kg_per_unit,unit_price_eur
+Mounting structure,Galvanised steel ramming piles C-profile,310,t,,1450
+Mounting structure,Galvanised steel mounting rails and purlins,265,t,,1600
+Mounting structure,Aluminium module clamps and rails,18,t,,5200
+Mounting structure,Stainless steel fasteners,6.5,t,,6800
+Mounting structure,PV modules 580 Wp bifacial,20690,pcs,,92
+Foundations,Inverter station slab concrete C30/37,96,m3,,140
+Foundations,Inverter station reinforcing steel B500B,8.5,t,,990
+Foundations,Substation foundation concrete C25/30,140,m3,,130
+Foundations,Substation reinforcing steel B500B,12,t,,1000
+Electrical,DC string cable 1 x 6 mm2 copper,98000,m,0.058,0.95
+Electrical,AC cable 3 x 1 x 300 mm2 aluminium conductor,7400,m,2.43,31
+Electrical,MV cable 3 x 1 x 150 mm2 aluminium conductor,5200,m,1.22,24
+Electrical,Copper earthing conductor 50 mm2,6200,m,0.45,9.5
+Electrical,HDPE cable duct DN110,4800,m,1.25,6.8
+Electrical,Inverter station transformers (4 no.),28,t,,9800
+Electrical,Power transformer 15 MVA 33/110 kV,32,t,,11800
+Electrical,Transformer oil,9.6,t,,1450
+Civil,Crushed stone access tracks 0/45,5400,t,,17
+Civil,Geotextile under access tracks,9800,m2,,1.9
+Civil,Gravel 2/32 for inverter pads,320,t,,21
+Fencing,Galvanised steel mesh fence panels,42,t,,2400
+Fencing,Galvanised steel fence posts,16,t,,2100
+Fencing,Fence post footings concrete C20/25,85,m3,,115

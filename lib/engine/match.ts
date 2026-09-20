@@ -54,7 +54,7 @@ function matchConcrete(text: string): Match | null {
 }
 
 /** Lines that mention concrete but are not concrete. */
-const NOT_CONCRETE = /rebar|reinforc|bewehr|anchor|\bgrout|bitumen|coating|formwork|epoxy|geotex|kerb drainage/i;
+const NOT_CONCRETE = /rebar|reinforc|bewehr|anchor|\bgrout|bitumen|coating|formwork|epoxy|geotex|concrete blocks?\b|blockwork|block wall|screed/i;
 
 /** First match wins, so the order runs from most specific to most general. English and German. */
 const RULES: Rule[] = [
@@ -62,6 +62,21 @@ const RULES: Rule[] = [
   { test: /transformer oil|insulating oil|mineral oil/i, factorId: "mineral-oil-primary", confidence: HIGH, reason: "Named as mineral oil" },
   { test: /transformer|\btrafo/i, factorId: "electrical-large", confidence: LOW, reason: "No transformer factor: weak proxy, check this line" },
   { test: /\bgrout|verguss|cement mortar|zementm[oö]rtel/i, factorId: "mortar-cement", confidence: MEDIUM, reason: "Grout: cement mortar proxy" },
+  { test: /screed|estrich/i, factorId: "mortar-cement", confidence: MEDIUM, reason: "Screed: cement mortar proxy" },
+  { test: /plasterboard|gypsum board|drywall|gipskarton/i, factorId: "plasterboard", confidence: HIGH, reason: "Named as plasterboard" },
+  {
+    test: /insulation|mineral wool|rock ?wool|glass ?wool|\beps\b|\bxps\b|\bpir\b|d[aä]mmung|d[aä]mmstoff/i,
+    factorId: "insulation",
+    confidence: MEDIUM,
+    reason: "Insulation: average insulation factor, type not distinguished",
+  },
+  { test: /\bbricks?\b|brickwork|klinker|ziegel/i, factorId: "bricks", confidence: HIGH, reason: "Named as clay brick" },
+  {
+    test: /concrete blocks?\b|blockwork|block wall|mauerstein|\baac blocks?\b/i,
+    factorId: "concrete-blocks",
+    confidence: MEDIUM,
+    reason: "Concrete blocks: no block factor, average concrete",
+  },
   { test: /epoxy|epoxid/i, factorId: "mortar-epoxy", confidence: HIGH, reason: "Named as epoxy mortar" },
   { test: /cem\s?iii/i, factorId: "cement-cem3", confidence: HIGH, reason: "Named as CEM III" },
   { test: /cem\s?ii/i, factorId: "cement-cem2", confidence: HIGH, reason: "Named as CEM II" },
@@ -81,11 +96,30 @@ const RULES: Rule[] = [
   },
   { test: /\bsteel\b|\bstahl\b/i, factorId: "metals-average", confidence: LOW, reason: "Steel product not identified: construction metals average" },
   { test: /copper|kupfer|\bcu\b/i, factorId: "copper-sheet", confidence: MEDIUM, reason: "Copper: metal only, copper sheet as a proxy" },
+  {
+    test: /alumini?um.*(frame|profile|section|extru|mullion|curtain|rail)|(frame|profile|section|mullion|rail).*alumini?um/i,
+    factorId: "aluminium-section",
+    confidence: HIGH,
+    reason: "Aluminium profile: aluminium section factor",
+  },
   { test: /alumini?um|\bal\b/i, factorId: "aluminium-primary", confidence: MEDIUM, reason: "Aluminium: metal only, primary aluminium proxy" },
+  { test: /glass|glazing|glazed|\bigu\b|verglasung/i, factorId: "glass", confidence: MEDIUM, reason: "Glazing: general glass factor" },
   { test: /geotex|geovlies|fleece|vlies/i, factorId: "geotextile", confidence: HIGH, reason: "Named as geotextile" },
   { test: /\bpvc\b/i, factorId: "pvc-primary", confidence: HIGH, reason: "Named as PVC" },
   { test: /hdpe|pe-?hd|pe100/i, factorId: "hdpe-primary", confidence: HIGH, reason: "Named as HDPE" },
+  {
+    test: /ldpe|damp-?proof membrane|\bdpm\b|vapou?r (barrier|control)|polyethylene (sheet|film)|pe-?folie/i,
+    factorId: "ldpe-primary",
+    confidence: HIGH,
+    reason: "Named as polyethylene sheet",
+  },
   { test: /polypropylene|\bpp\b/i, factorId: "pp-primary", confidence: HIGH, reason: "Named as polypropylene" },
+  {
+    test: /recycl\w* asphalt|reclaimed asphalt|asphalt planings|\bplanings\b|\brap\b/i,
+    factorId: "asphalt-recycled",
+    confidence: HIGH,
+    reason: "Named as recycled asphalt",
+  },
   { test: /asphalt|bitumin(ous)? (mix|macadam)/i, factorId: "asphalt-primary", confidence: HIGH, reason: "Named as asphalt" },
   { test: /bitumen|bitumin/i, factorId: "bitumen-emulsion", confidence: MEDIUM, reason: "Bitumen coating: emulsion factor" },
   { test: /gravel|\bkies\b/i, factorId: "gravel", confidence: HIGH, reason: "Named as gravel" },

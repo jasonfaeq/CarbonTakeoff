@@ -57,7 +57,19 @@
     "bitumen-emulsion": "324122",
     "mineral-oil-primary": "324191",
     "mineral-oil-recycled": "324191",
-    "electrical-large": "335311"
+    "electrical-large": "335311",
+    "bricks": "327120",
+    "concrete-blocks": "327331",
+    "insulation": "327993",
+    "insulation-recycled": "327993",
+    "plasterboard": "327420",
+    "plasterboard-recycled": "327420",
+    "glass": "327211",
+    "glass-recycled": "327211",
+    "ldpe-primary": "326113",
+    "ldpe-recycled": "326113",
+    "pipe-pehd": "326122",
+    "pipe-pvc": "326122"
   },
   "factors": [
     {
@@ -103,9 +115,27 @@
       "unit": "kg CO2e/USD"
     },
     {
+      "naics": "326113",
+      "title": "Plastics Material and Resin (film and sheet)",
+      "value": 0.45,
+      "unit": "kg CO2e/USD"
+    },
+    {
       "naics": "326122",
       "title": "Plastics Pipe and Pipe Fitting",
       "value": 0.35,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "327120",
+      "title": "Clay Building Material and Refractories",
+      "value": 0.9,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "327211",
+      "title": "Flat Glass Manufacturing",
+      "value": 0.85,
       "unit": "kg CO2e/USD"
     },
     {
@@ -121,9 +151,27 @@
       "unit": "kg CO2e/USD"
     },
     {
+      "naics": "327331",
+      "title": "Concrete Block and Brick",
+      "value": 0.5,
+      "unit": "kg CO2e/USD"
+    },
+    {
       "naics": "327390",
       "title": "Other Concrete Products",
       "value": 0.3,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "327420",
+      "title": "Gypsum Product Manufacturing",
+      "value": 0.7,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "327993",
+      "title": "Mineral Wool Manufacturing",
+      "value": 0.55,
       "unit": "kg CO2e/USD"
     },
     {
