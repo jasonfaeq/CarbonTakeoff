@@ -6,14 +6,16 @@ Most tools I've seen either want a full LCA model or just multiply spend by an a
 
 ## plan
 
-- [ ] parse a BOM (csv first, xlsx later)
-- [ ] match lines to emission factors (rules first, maybe an LLM later)
-- [ ] unit conversion (m3 -> t etc, density per material)
-- [ ] review step, nothing counts until someone accepts it
-- [ ] dashboard: total, by material, hotspots
-- [ ] lower carbon alternatives (same source only!)
-- [ ] spend vs activity comparison
+- [x] parse a BOM (csv first, xlsx later)
+- [x] match lines to emission factors (rules first, maybe an LLM later)
+- [x] unit conversion (m3 -> t etc, density per material)
+- [x] review step, nothing counts until someone accepts it
+- [x] dashboard: total, by material, hotspots
+- [x] lower carbon alternatives (same source only!)
+- [x] spend vs activity comparison
 - [ ] extraction from spec pdfs
+- [ ] more demos (solar, building, road done)
+- [ ] real factor import
 
 ## factors
 

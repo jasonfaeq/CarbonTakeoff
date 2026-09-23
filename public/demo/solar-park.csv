@@ -1,7 +1,7 @@
 # SYNTHETIC DEMO DATA. Made up for Carbon Takeoff: a 12 MWp ground-mounted solar park. Quantities are illustrative and the prices are invented.
 section,description,quantity,unit,kg_per_unit,unit_price_eur
-Mounting structure,Galvanised steel ramming piles C-profile,310,t,,1450
-Mounting structure,Galvanised steel mounting rails and purlins,265,t,,1600
+Mounting structure,Galvanised steel ramming piles C-profile,228,t,,1450
+Mounting structure,Galvanised steel mounting rails and purlins,196,t,,1600
 Mounting structure,Aluminium module clamps and rails,18,t,,5200
 Mounting structure,Stainless steel fasteners,6.5,t,,6800
 Mounting structure,PV modules 580 Wp bifacial,20690,pcs,,92
