@@ -31,6 +31,8 @@ export interface Totals {
   results: LineResult[];
   byGroup: Breakdown[];
   bySection: Breakdown[];
+  /** Carbon by BOM section and material group together, for the flow chart. */
+  flows: { section: string; group: string; kgCO2e: number }[];
   /** Counted lines, largest first. */
   ranked: LineResult[];
   countedLines: number;
@@ -70,9 +72,7 @@ export function computeLine(line: BomLine, catalogue: Catalogue, options: CalcOp
 }
 
 function breakdown(map: Map<string, { kg: number; lines: number }>): Breakdown[] {
-  return [...map.entries()]
-    .map(([key, v]) => ({ key, kgCO2e: v.kg, lines: v.lines }))
-    .sort((a, b) => b.kgCO2e - a.kgCO2e);
+  return [...map.entries()].map(([key, v]) => ({ key, kgCO2e: v.kg, lines: v.lines })).sort((a, b) => b.kgCO2e - a.kgCO2e);
 }
 
 function add(map: Map<string, { kg: number; lines: number }>, key: string, kg: number) {
@@ -86,6 +86,7 @@ export function computeTotals(lines: BomLine[], catalogue: Catalogue, options: C
   const results = lines.map((line) => computeLine(line, catalogue, options));
   const groups = new Map<string, { kg: number; lines: number }>();
   const sections = new Map<string, { kg: number; lines: number }>();
+  const flows = new Map<string, Map<string, number>>();
   let kgCO2e = 0;
   let uncountedLines = 0;
   results.forEach((result, i) => {
@@ -95,8 +96,13 @@ export function computeTotals(lines: BomLine[], catalogue: Catalogue, options: C
       return;
     }
     kgCO2e += result.kgCO2e;
-    add(groups, catalogue.byId.get(result.factorId!)!.group, result.kgCO2e);
-    add(sections, lines[i].section?.trim() || NO_SECTION, result.kgCO2e);
+    const group = catalogue.byId.get(result.factorId!)!.group;
+    const section = lines[i].section?.trim() || NO_SECTION;
+    add(groups, group, result.kgCO2e);
+    add(sections, section, result.kgCO2e);
+    const bySection = flows.get(section) ?? new Map<string, number>();
+    bySection.set(group, (bySection.get(group) ?? 0) + result.kgCO2e);
+    flows.set(section, bySection);
   });
   const ranked = results.filter((r) => r.counted && r.kgCO2e !== null).sort((a, b) => b.kgCO2e! - a.kgCO2e!);
   return {
@@ -104,6 +110,7 @@ export function computeTotals(lines: BomLine[], catalogue: Catalogue, options: C
     results,
     byGroup: breakdown(groups),
     bySection: breakdown(sections),
+    flows: [...flows.entries()].flatMap(([section, m]) => [...m.entries()].map(([group, kg]) => ({ section, group, kgCO2e: kg }))),
     ranked,
     countedLines: ranked.length,
     pendingLines: lines.filter((line, i) => line.status === "pending" && !results[i].counted).length,

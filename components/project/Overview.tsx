@@ -7,6 +7,7 @@ import { buildInsights, computeScenario, switchAll, type Insight } from "@/lib/e
 import { percent, tonnes } from "@/lib/format";
 import { BarList } from "../charts/BarList";
 import { Donut } from "../charts/Donut";
+import { Sankey } from "../charts/Sankey";
 import { Treemap } from "../charts/Treemap";
 import { Icon, type IconName } from "../Icon";
 import { EmptyState, Kpi, ScreeningNote, Swatch } from "../ui";
@@ -131,7 +132,7 @@ export function Overview() {
         </ul>
       )}
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <section className="card p-5">
           <div className="flex items-baseline justify-between">
             <h3 className="font-semibold">By material</h3>
@@ -152,29 +153,6 @@ export function Overview() {
             <div className="w-full min-w-0 flex-1">
               <BarList data={totals.byGroup.map((g) => ({ key: g.key, value: g.kgCO2e }))} format={tonnes} selected={group} onSelect={setGroup} />
             </div>
-          </div>
-        </section>
-
-        <section className="card p-5">
-          <h3 className="font-semibold">By section</h3>
-          <p className="text-xs text-ink-3">The sections of the bill of materials</p>
-          <div className="mt-4">
-            <BarList
-              data={totals.bySection.map((s) => ({ key: s.key, value: s.kgCO2e, color: "var(--brand)", detail: `${s.lines} lines` }))}
-              format={tonnes}
-            />
-          </div>
-        </section>
-      </div>
-
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <section className="card p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="font-semibold">Every counted line</h3>
-            <span className="text-xs text-ink-3">Area is carbon. {group ? `Showing ${group}.` : "Pick a material to filter."}</span>
-          </div>
-          <div className="mt-4">
-            <Treemap data={tiles} format={(v) => `${tonnes(v)} t`} onSelect={openLine} />
           </div>
         </section>
 
@@ -207,6 +185,30 @@ export function Overview() {
           </ol>
         </section>
       </div>
+
+      <section className="card p-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h3 className="font-semibold">From section to material</h3>
+          <span className="text-xs text-ink-3">Where in the bill of materials the carbon sits, and what it is made of</span>
+        </div>
+        <div className="mt-5">
+          <Sankey
+            links={totals.flows.map((f) => ({ source: f.section, target: f.group, value: f.kgCO2e }))}
+            height={Math.max(220, Math.min(420, Math.max(totals.bySection.length, totals.byGroup.length) * 46))}
+            format={(v) => `${tonnes(v)} t`}
+          />
+        </div>
+      </section>
+
+      <section className="card p-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h3 className="font-semibold">Every counted line</h3>
+          <span className="text-xs text-ink-3">Area is carbon. {group ? `Showing ${group}.` : "Pick a material to filter."}</span>
+        </div>
+        <div className="mt-4">
+          <Treemap data={tiles} height={360} format={(v) => `${tonnes(v)} t`} onSelect={openLine} />
+        </div>
+      </section>
       <ScreeningNote />
     </div>
   );

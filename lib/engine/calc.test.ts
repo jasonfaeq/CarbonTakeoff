@@ -86,6 +86,12 @@ describe("computeTotals", () => {
     expect(totals.bySection[0].lines).toBe(2);
   });
 
+  it("keeps section and material together for the flow chart", () => {
+    const foundationConcrete = totals.flows.find((f) => f.section === "Foundation" && f.group === "Concrete & cement")!;
+    expect(foundationConcrete.kgCO2e).toBeCloseTo(totals.results[0].kgCO2e!);
+    expect(totals.flows.reduce((s, f) => s + f.kgCO2e, 0)).toBeCloseTo(totals.kgCO2e);
+  });
+
   it("ranks lines and measures concentration", () => {
     expect(totals.ranked[0].lineId).toBe("a");
     expect(topShare(totals, 1)).toBeGreaterThan(0.5);
