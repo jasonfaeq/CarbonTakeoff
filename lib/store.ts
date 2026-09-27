@@ -202,11 +202,25 @@ export const actions = {
     return true;
   },
   updateLine(id: string, lineId: string, patch: Partial<BomLine>) {
+    actions.updateLines(id, [lineId], patch);
+  },
+  updateLines(id: string, lineIds: string[], patch: Partial<BomLine>) {
+    const set = new Set(lineIds);
     setProject(id, (p) => {
       const switches = { ...p.switches };
       // A new factor makes the old alternative meaningless.
-      if ("factorId" in patch) delete switches[lineId];
-      return { ...p, switches, lines: p.lines.map((l) => (l.id === lineId ? { ...l, ...patch } : l)) };
+      if ("factorId" in patch) for (const lineId of lineIds) delete switches[lineId];
+      return { ...p, switches, lines: p.lines.map((l) => (set.has(l.id) ? { ...l, ...patch } : l)) };
+    });
+  },
+  addLine(id: string, line: BomLine) {
+    setProject(id, (p) => ({ ...p, lines: [...p.lines, line] }));
+  },
+  removeLines(id: string, lineIds: string[]) {
+    const set = new Set(lineIds);
+    setProject(id, (p) => {
+      const switches = Object.fromEntries(Object.entries(p.switches).filter(([lineId]) => !set.has(lineId)));
+      return { ...p, switches, lines: p.lines.filter((l) => !set.has(l.id)) };
     });
   },
   setStatus(id: string, lineIds: string[], status: LineStatus) {
