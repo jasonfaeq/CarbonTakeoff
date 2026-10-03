@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { catalogue, spendData } from "@/lib/catalogue";
 import { alternativesFor, computeLine, spendFactorFor, spendKgCO2e, type Factor } from "@/lib/engine";
 import { factorValue, quantity, tonnes } from "@/lib/format";
-import { actions } from "@/lib/store";
+import { actions, activeScenario } from "@/lib/store";
 import { Drawer } from "../Drawer";
 import { Icon } from "../Icon";
 import { ConfidenceBadge, FactorBadges, SourceLink, StatusBadge, Swatch } from "../ui";
@@ -188,7 +188,7 @@ export function LineDrawer() {
                 {alts.map((alt) => {
                   const after = computeLine({ ...line, factorId: alt.id }, catalogue, options).kgCO2e;
                   const saving = result.kgCO2e !== null && after !== null ? result.kgCO2e - after : null;
-                  const chosen = project.switches[line.id] === alt.id;
+                  const chosen = activeScenario(project)?.switches[line.id] === alt.id;
                   return (
                     <li key={alt.id} className="flex items-center gap-3 rounded-xl border border-line p-3">
                       <div className="min-w-0 flex-1">
@@ -201,14 +201,9 @@ export function LineDrawer() {
                       <button
                         className="btn btn-sm"
                         aria-pressed={chosen}
-                        onClick={() => {
-                          const next = { ...project.switches };
-                          if (chosen) delete next[line.id];
-                          else next[line.id] = alt.id;
-                          actions.setSwitches(project.id, next);
-                        }}
+                        onClick={() => actions.setSwitch(project.id, line.id, chosen ? null : alt.id)}
                       >
-                        {chosen ? "In scenario" : "Add to scenario"}
+                        {chosen ? `In ${activeScenario(project)?.name}` : "Add to scenario"}
                       </button>
                     </li>
                   );

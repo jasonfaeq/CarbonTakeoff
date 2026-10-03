@@ -48,7 +48,7 @@ describe("buildInsights", () => {
   });
 
   it("reports the switch-all saving when there is one", () => {
-    expect(insights.find((i) => i.id === "savings")?.action?.href).toBe("/alternatives");
+    expect(insights.find((i) => i.id === "savings")?.action?.href).toBe("/scenarios");
   });
 
   it("says nothing about the total for an empty project", () => {

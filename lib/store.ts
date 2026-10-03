@@ -9,6 +9,13 @@ export interface DocumentInfo {
   provenance: string;
 }
 
+/** A named set of alternative factors, line id to factor id. */
+export interface Scenario {
+  id: string;
+  name: string;
+  switches: Switches;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -17,8 +24,8 @@ export interface Project {
   document: DocumentInfo | null;
   lines: BomLine[];
   autoAcceptHigh: boolean;
-  /** Alternatives chosen in the Alternatives tab. */
-  switches: Switches;
+  scenarios: Scenario[];
+  activeScenarioId: string | null;
   premiumPercent: number;
   /** Lines switched in the spend-vs-activity comparison. Null means the default: steel. */
   comparisonLineIds: string[] | null;
@@ -58,11 +65,29 @@ function blankProject(init: NewProject): Project {
     createdAt: now,
     updatedAt: now,
     autoAcceptHigh: true,
-    switches: {},
+    scenarios: [],
+    activeScenarioId: null,
     premiumPercent: 15,
     comparisonLineIds: null,
     ...init,
   };
+}
+
+/** Bring a project saved by an older version up to the current shape. */
+export function migrateProject(raw: Record<string, unknown>): Project {
+  const p = { ...raw } as unknown as Project & { switches?: Switches };
+  if (!Array.isArray(p.scenarios)) {
+    const old = p.switches ?? {};
+    p.scenarios = Object.keys(old).length > 0 ? [{ id: newId(), name: "Low-carbon", switches: old }] : [];
+    p.activeScenarioId = p.scenarios[0]?.id ?? null;
+  }
+  delete p.switches;
+  if (!p.scenarios.some((s) => s.id === p.activeScenarioId)) p.activeScenarioId = p.scenarios[0]?.id ?? null;
+  return p;
+}
+
+export function activeScenario(project: Project): Scenario | null {
+  return project.scenarios.find((s) => s.id === project.activeScenarioId) ?? null;
 }
 
 function load() {
@@ -71,7 +96,8 @@ function load() {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      state = { ...EMPTY, ...JSON.parse(stored) };
+      const parsed = JSON.parse(stored) as { projects?: Record<string, unknown>[] };
+      state = { projects: (parsed.projects ?? []).map(migrateProject) };
       return;
     }
     const legacy = window.localStorage.getItem(LEGACY_KEY);
@@ -79,7 +105,7 @@ function load() {
       const old = JSON.parse(legacy);
       if (old.lines?.length) {
         const name = old.document?.file ?? "Imported project";
-        state = { projects: [{ ...blankProject({ name, document: old.document, lines: old.lines }), ...old, name }] };
+        state = { projects: [migrateProject({ ...blankProject({ name, document: old.document, lines: old.lines }), ...old, name })] };
         persist();
       }
       window.localStorage.removeItem(LEGACY_KEY);
@@ -130,6 +156,11 @@ function setProject(id: string, update: (p: Project) => Project, record = true) 
   }
   state = { ...state, projects: state.projects.map((p) => (p.id === id ? next : p)) };
   emit();
+}
+
+/** Drop the chosen alternatives of these lines from every scenario. */
+function withoutSwitches(p: Project, lineIds: Set<string>): Scenario[] {
+  return p.scenarios.map((s) => ({ ...s, switches: Object.fromEntries(Object.entries(s.switches).filter(([lineId]) => !lineIds.has(lineId))) }));
 }
 
 export function useProjects(): Project[] {
@@ -206,22 +237,19 @@ export const actions = {
   },
   updateLines(id: string, lineIds: string[], patch: Partial<BomLine>) {
     const set = new Set(lineIds);
-    setProject(id, (p) => {
-      const switches = { ...p.switches };
-      // A new factor makes the old alternative meaningless.
-      if ("factorId" in patch) for (const lineId of lineIds) delete switches[lineId];
-      return { ...p, switches, lines: p.lines.map((l) => (set.has(l.id) ? { ...l, ...patch } : l)) };
-    });
+    setProject(id, (p) => ({
+      ...p,
+      // A new factor makes the old alternatives meaningless.
+      scenarios: "factorId" in patch ? withoutSwitches(p, set) : p.scenarios,
+      lines: p.lines.map((l) => (set.has(l.id) ? { ...l, ...patch } : l)),
+    }));
   },
   addLine(id: string, line: BomLine) {
     setProject(id, (p) => ({ ...p, lines: [...p.lines, line] }));
   },
   removeLines(id: string, lineIds: string[]) {
     const set = new Set(lineIds);
-    setProject(id, (p) => {
-      const switches = Object.fromEntries(Object.entries(p.switches).filter(([lineId]) => !set.has(lineId)));
-      return { ...p, switches, lines: p.lines.filter((l) => !set.has(l.id)) };
-    });
+    setProject(id, (p) => ({ ...p, scenarios: withoutSwitches(p, set), lines: p.lines.filter((l) => !set.has(l.id)) }));
   },
   setStatus(id: string, lineIds: string[], status: LineStatus) {
     const set = new Set(lineIds);
@@ -230,8 +258,46 @@ export const actions = {
   setAutoAccept(id: string, autoAcceptHigh: boolean) {
     setProject(id, (p) => ({ ...p, autoAcceptHigh }));
   },
-  setSwitches(id: string, switches: Switches) {
-    setProject(id, (p) => ({ ...p, switches }));
+  createScenario(id: string, name: string, switches: Switches = {}): string {
+    const scenario = { id: newId(), name, switches };
+    setProject(id, (p) => ({ ...p, scenarios: [...p.scenarios, scenario], activeScenarioId: scenario.id }));
+    return scenario.id;
+  },
+  duplicateScenario(id: string, scenarioId: string): string | null {
+    const project = state.projects.find((p) => p.id === id);
+    const source = project?.scenarios.find((s) => s.id === scenarioId);
+    if (!source) return null;
+    return actions.createScenario(id, `${source.name} (copy)`, { ...source.switches });
+  },
+  renameScenario(id: string, scenarioId: string, name: string) {
+    setProject(id, (p) => ({ ...p, scenarios: p.scenarios.map((s) => (s.id === scenarioId ? { ...s, name } : s)) }));
+  },
+  deleteScenario(id: string, scenarioId: string) {
+    setProject(id, (p) => {
+      const scenarios = p.scenarios.filter((s) => s.id !== scenarioId);
+      return { ...p, scenarios, activeScenarioId: p.activeScenarioId === scenarioId ? (scenarios[0]?.id ?? null) : p.activeScenarioId };
+    });
+  },
+  setActiveScenario(id: string, scenarioId: string) {
+    setProject(id, (p) => ({ ...p, activeScenarioId: scenarioId }), false);
+  },
+  setScenarioSwitches(id: string, scenarioId: string, switches: Switches) {
+    setProject(id, (p) => ({ ...p, scenarios: p.scenarios.map((s) => (s.id === scenarioId ? { ...s, switches } : s)) }));
+  },
+  /** Choose an alternative for one line in the active scenario, making a scenario if there is none. */
+  setSwitch(id: string, lineId: string, factorId: string | null) {
+    const project = state.projects.find((p) => p.id === id);
+    if (!project) return;
+    let scenario = activeScenario(project);
+    if (!scenario) {
+      if (!factorId) return;
+      actions.createScenario(id, "Low-carbon");
+      scenario = activeScenario(state.projects.find((p) => p.id === id)!)!;
+    }
+    const switches = { ...scenario.switches };
+    if (factorId) switches[lineId] = factorId;
+    else delete switches[lineId];
+    actions.setScenarioSwitches(id, scenario.id, switches);
   },
   setPremium(id: string, premiumPercent: number) {
     // A slider sends many values, which are not worth an undo step each.

@@ -19,7 +19,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: "", label: "Overview", icon: "overview" },
   { href: "/lines", label: "Lines", icon: "list" },
-  { href: "/alternatives", label: "Alternatives", icon: "branch" },
+  { href: "/scenarios", label: "Scenarios", icon: "branch" },
   { href: "/spend", label: "Spend vs activity", icon: "scale" },
 ];
 

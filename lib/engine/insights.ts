@@ -86,7 +86,7 @@ export function buildInsights(lines: BomLine[], totals: Totals, catalogue: Catal
       tone: "good",
       title: `Sourced alternatives could save ${t(scenario.savingsKgCO2e)}`,
       body: `${pct(scenario.savingsPercent / 100)} of the total across ${scenario.lines.length} ${scenario.lines.length === 1 ? "line" : "lines"}, using only lower factors from the same source.`,
-      action: { label: "See alternatives", href: "/alternatives" },
+      action: { label: "See alternatives", href: "/scenarios" },
     });
   }
 
