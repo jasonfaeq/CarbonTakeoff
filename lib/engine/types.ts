@@ -60,7 +60,32 @@ export interface BomLine {
   status: LineStatus;
   /** Spend commodity (NAICS), for lines whose commodity can't be read from the factor. */
   naics?: string | null;
+  /** Delivery to site, for A4. One leg: mode and distance. */
+  transport?: TransportLeg | null;
   source: LineSource;
+}
+
+export interface TransportLeg {
+  mode: string;
+  km: number | null;
+}
+
+/** A freight factor per tonne-kilometre, with its provenance. */
+export interface TransportMode {
+  id: string;
+  name: string;
+  value: number;
+  unit: string;
+  /** Words a BOM might use for this mode. */
+  aliases: string[];
+  source: string;
+  sourceName: string;
+  tableRow: string;
+  versionYear: string;
+  licence: string;
+  url: string;
+  retrieved: string;
+  status: FactorStatus;
 }
 
 export interface SpendFactor {

@@ -1,7 +1,8 @@
 import Papa from "papaparse";
 import { capConfidence, matchFactor, type BomLine, type Catalogue, type LineSource } from "@/lib/engine";
 
-export type BomField = "description" | "quantity" | "unit" | "kgPerUnit" | "densityKgM3" | "unitPriceEur" | "section";
+export type BomField =
+  "description" | "quantity" | "unit" | "kgPerUnit" | "densityKgM3" | "unitPriceEur" | "section" | "transportMode" | "transportKm";
 
 export const FIELD_LABELS: Record<BomField, string> = {
   description: "Description",
@@ -11,6 +12,8 @@ export const FIELD_LABELS: Record<BomField, string> = {
   densityKgM3: "Density (kg/m³)",
   unitPriceEur: "Unit price (EUR)",
   section: "Section",
+  transportMode: "Transport mode",
+  transportKm: "Transport distance (km)",
 };
 
 const HEADER_ALIASES: Record<BomField, string[]> = {
@@ -21,6 +24,8 @@ const HEADER_ALIASES: Record<BomField, string[]> = {
   densityKgM3: ["density_kg_m3", "density", "kg/m3", "dichte"],
   unitPriceEur: ["unit_price_eur", "unit price eur", "unit price", "price", "eur/unit", "preis", "einheitspreis"],
   section: ["section", "package", "gewerk", "group", "area"],
+  transportMode: ["transport_mode", "transport mode", "transport", "mode", "delivery mode"],
+  transportKm: ["transport_km", "transport km", "distance_km", "distance km", "distance", "km"],
 };
 
 export const REQUIRED_FIELDS: BomField[] = ["description", "quantity", "unit"];
@@ -127,6 +132,7 @@ export function tableToLines(table: RawTable, mapping: ColumnMapping, file: stri
           kgPerUnit: num(record.kgPerUnit),
           densityKgM3: num(record.densityKgM3),
           unitPriceEur: num(record.unitPriceEur),
+          transport: record.transportMode ? { mode: String(record.transportMode).trim(), km: num(record.transportKm) } : null,
         },
         {
           kind,

@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { catalogue, spendData } from "@/lib/catalogue";
-import { alternativesFor, computeLine, spendFactorFor, spendKgCO2e, type Factor } from "@/lib/engine";
+import { catalogue, spendData, transportModes } from "@/lib/catalogue";
+import { alternativesFor, computeLine, computeTransport, spendFactorFor, spendKgCO2e, type Factor } from "@/lib/engine";
 import { factorValue, quantity, tonnes } from "@/lib/format";
 import { actions, activeScenario } from "@/lib/store";
 import { Drawer } from "../Drawer";
@@ -209,6 +209,35 @@ export function LineDrawer() {
                   );
                 })}
               </ul>
+            )}
+          </Section>
+
+          <Section title="Transport to site (A4)">
+            {line.transport ? (
+              (() => {
+                const a4 = computeTransport(line, result, transportModes);
+                return (
+                  <dl>
+                    <Row label="Leg">
+                      {a4.mode?.name ?? line.transport.mode}, <span className="num">{quantity(line.transport.km)} km</span>
+                    </Row>
+                    <Row label="A4">
+                      {a4.error ? (
+                        <span className="text-bad">{a4.error}</span>
+                      ) : (
+                        <>
+                          <span className="num">{tonnes(a4.kgCO2e ?? 0)} tCO₂e</span>
+                          <div className="text-xs text-ink-3">
+                            {Math.round(a4.tkm ?? 0).toLocaleString("en-GB")} tonne-km × {a4.mode?.value} kg CO₂e per tonne-km
+                          </div>
+                        </>
+                      )}
+                    </Row>
+                  </dl>
+                );
+              })()
+            ) : (
+              <p className="text-sm text-ink-3">No delivery leg set. Add one in Transport.</p>
             )}
           </Section>
 

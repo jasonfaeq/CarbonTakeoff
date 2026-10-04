@@ -20,6 +20,7 @@ const NAV: NavItem[] = [
   { href: "", label: "Overview", icon: "overview" },
   { href: "/lines", label: "Lines", icon: "list" },
   { href: "/scenarios", label: "Scenarios", icon: "branch" },
+  { href: "/transport", label: "Transport (A4)", icon: "truck" },
   { href: "/spend", label: "Spend vs activity", icon: "scale" },
 ];
 

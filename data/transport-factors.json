@@ -1,0 +1,141 @@
+{
+  "_note": "SYNTHETIC PLACEHOLDER VALUES for A4 transport. Order of magnitude only. To be replaced by the DESNZ freight factors.",
+  "scope": "Tank-to-wheel emissions of the freight leg only (A4).",
+  "modes": [
+    {
+      "id": "hgv-average",
+      "name": "HGV, average (diesel, average load)",
+      "value": 0.1,
+      "unit": "kg CO2e/tonne.km",
+      "aliases": [
+        "hgv",
+        "truck",
+        "lorry",
+        "road",
+        "lkw"
+      ],
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-04",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "id": "hgv-rigid",
+      "name": "HGV, rigid",
+      "value": 0.2,
+      "unit": "kg CO2e/tonne.km",
+      "aliases": [
+        "rigid"
+      ],
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-04",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "id": "hgv-articulated",
+      "name": "HGV, articulated",
+      "value": 0.08,
+      "unit": "kg CO2e/tonne.km",
+      "aliases": [
+        "artic",
+        "articulated",
+        "semi",
+        "sattelzug"
+      ],
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-04",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "id": "van",
+      "name": "Van, up to 3.5 t",
+      "value": 0.6,
+      "unit": "kg CO2e/tonne.km",
+      "aliases": [
+        "van",
+        "transporter"
+      ],
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-04",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "id": "rail",
+      "name": "Rail freight",
+      "value": 0.03,
+      "unit": "kg CO2e/tonne.km",
+      "aliases": [
+        "rail",
+        "train",
+        "bahn"
+      ],
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-04",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "id": "sea-bulk",
+      "name": "Sea, bulk carrier",
+      "value": 0.004,
+      "unit": "kg CO2e/tonne.km",
+      "aliases": [
+        "sea",
+        "ship",
+        "bulk",
+        "bulk carrier",
+        "schiff"
+      ],
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-04",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "id": "sea-container",
+      "name": "Sea, container ship",
+      "value": 0.016,
+      "unit": "kg CO2e/tonne.km",
+      "aliases": [
+        "container",
+        "container ship",
+        "containership"
+      ],
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-04",
+      "status": "PLACEHOLDER"
+    }
+  ]
+}

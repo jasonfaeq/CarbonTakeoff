@@ -1,27 +1,27 @@
-# SYNTHETIC DEMO DATA. Made up for Carbon Takeoff. Quantities are illustrative and the prices are invented.
-section,description,quantity,unit,kg_per_unit,unit_price_eur
-WTG foundation,Blinding concrete C20/25,60,m3,,110
-WTG foundation,Foundation slab concrete C30/37,640,m3,,135
-WTG foundation,Pedestal concrete C50/60,75,m3,,175
-WTG foundation,Reinforcing steel B500B,82,t,,980
-WTG foundation,Anchor cage structural steel S355,14,t,,2150
-WTG foundation,High-strength grout under tower flange,3.2,m3,,1800
-WTG foundation,Epoxy levelling mortar,420,kg,,14.5
-WTG foundation,Bitumen coating to buried concrete,650,kg,,3.2
-WTG foundation,Crushed stone backfill 0/45,1200,t,,18
-WTG foundation,Gravel drainage layer 2/32,180,t,,22
-WTG foundation,Geotextile separation layer 500 g/m2,1400,m2,0.5,2.6
-WTG foundation,Timber formwork,9,t,,640
-Cabling,Copper earthing tape 25 x 3 mm,240,m,0.67,14
-Cabling,MV cable 3 x 1 x 240 mm2 aluminium conductor,1800,m,1.95,28
-Cabling,LV cable 4 x 95 mm2 copper conductor,320,m,3.4,62
-Cabling,PVC cable duct DN160,900,m,2.6,11
-Cabling,HDPE drainage pipe DN110,260,m,1.1,9.5
-Substation,Substation slab concrete C25/30,85,m3,,128
-Substation,Substation reinforcing steel B500B,9.5,t,,1020
-Substation,Galvanised steel support structures,18,t,,2650
-Substation,Cement CEM II/A 42.5 for site mortar,6,t,,165
-Substation,Aluminium busbar,1.2,t,,6200
-Substation,Power transformer 25 MVA 110/20 kV,38,t,,13500
-Substation,Transformer oil top-up,1.2,t,,1500
-Substation,MV switchgear panel,6,pcs,,38000
+# SYNTHETIC DEMO DATA. Made up for Carbon Takeoff. Quantities and delivery distances are illustrative and the prices are invented.
+section,description,quantity,unit,kg_per_unit,unit_price_eur,transport_mode,transport_km
+WTG foundation,Blinding concrete C20/25,60,m3,,110,hgv-rigid,28
+WTG foundation,Foundation slab concrete C30/37,640,m3,,135,hgv-rigid,28
+WTG foundation,Pedestal concrete C50/60,75,m3,,175,hgv-rigid,28
+WTG foundation,Reinforcing steel B500B,82,t,,980,hgv-articulated,190
+WTG foundation,Anchor cage structural steel S355,14,t,,2150,hgv-articulated,860
+WTG foundation,High-strength grout under tower flange,3.2,m3,,1800,hgv-rigid,240
+WTG foundation,Epoxy levelling mortar,420,kg,,14.5,van,240
+WTG foundation,Bitumen coating to buried concrete,650,kg,,3.2,van,120
+WTG foundation,Crushed stone backfill 0/45,1200,t,,18,hgv-articulated,35
+WTG foundation,Gravel drainage layer 2/32,180,t,,22,hgv-articulated,35
+WTG foundation,Geotextile separation layer 500 g/m2,1400,m2,0.5,2.6,hgv-average,310
+WTG foundation,Timber formwork,9,t,,640,hgv-average,150
+Cabling,Copper earthing tape 25 x 3 mm,240,m,0.67,14,van,180
+Cabling,MV cable 3 x 1 x 240 mm2 aluminium conductor,1800,m,1.95,28,hgv-articulated,640
+Cabling,LV cable 4 x 95 mm2 copper conductor,320,m,3.4,62,hgv-average,640
+Cabling,PVC cable duct DN160,900,m,2.6,11,hgv-average,210
+Cabling,HDPE drainage pipe DN110,260,m,1.1,9.5,hgv-average,210
+Substation,Substation slab concrete C25/30,85,m3,,128,hgv-rigid,28
+Substation,Substation reinforcing steel B500B,9.5,t,,1020,hgv-articulated,190
+Substation,Galvanised steel support structures,18,t,,2650,hgv-articulated,420
+Substation,Cement CEM II/A 42.5 for site mortar,6,t,,165,hgv-average,95
+Substation,Aluminium busbar,1.2,t,,6200,hgv-average,520
+Substation,Power transformer 25 MVA 110/20 kV,38,t,,13500,rail,1150
+Substation,Transformer oil top-up,1.2,t,,1500,hgv-average,310
+Substation,MV switchgear panel,6,pcs,,38000,hgv-average,780
