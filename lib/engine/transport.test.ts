@@ -53,6 +53,13 @@ describe("computeTransport", () => {
     const odd = line("d", { transport: { mode: "zeppelin", km: 10 } });
     expect(computeTransport(odd, computeLine(odd, catalogue, options), transportModes).error).toMatch(/Unknown transport mode/);
   });
+
+  it("needs a mass, pieces have none", () => {
+    const panel = line("e", { quantity: 6, unit: "pcs", factorId: null, transport: { mode: "hgv-average", km: 780 } });
+    const r = computeTransport(panel, computeLine(panel, catalogue, options), transportModes);
+    expect(r.kgCO2e).toBeNull();
+    expect(r.error).toBe("No mass for this line");
+  });
 });
 
 describe("computeTransportTotals", () => {

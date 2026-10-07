@@ -40,8 +40,9 @@ export function computeTransport(line: BomLine, result: LineResult, modes: Trans
   const mode = findMode(line.transport.mode, modes);
   if (!mode) return { ...base, mode: null, tkm: null, kgCO2e: null, error: `Unknown transport mode "${line.transport.mode}"` };
   if (line.transport.km === null || line.transport.km < 0) return { ...base, mode, tkm: null, kgCO2e: null, error: "No distance" };
-  const tonnes = (result.massKg ?? 0) / 1000;
-  const tkm = tonnes * line.transport.km;
+  // no mass = no A4. this used to quietly give 0 t for pieces and lines without a density
+  if (result.massKg === null) return { ...base, mode, tkm: null, kgCO2e: null, error: "No mass for this line" };
+  const tkm = (result.massKg / 1000) * line.transport.km;
   return { ...base, mode, tkm, kgCO2e: tkm * mode.value, error: null };
 }
 
