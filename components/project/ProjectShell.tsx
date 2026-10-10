@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 import { tonnes } from "@/lib/format";
 import { actions, useHistory } from "@/lib/store";
@@ -34,19 +34,25 @@ export function ProjectShell({ children }: { children: ReactNode }) {
   const { id, lines, document } = project;
   const { canUndo, canRedo } = useHistory(id);
   const pathname = usePathname();
+  const router = useRouter();
   const base = `/project/${id}`;
   const decided = lines.length - totals.pendingLines;
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== "z" || isTyping(e.target)) return;
-      e.preventDefault();
-      if (e.shiftKey) actions.redo(id);
-      else actions.undo(id);
+      if (isTyping(e.target) || window.document.querySelector("dialog[open]")) return;
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (e.shiftKey) actions.redo(id);
+        else actions.undo(id);
+      } else if (!e.ctrlKey && !e.metaKey && !e.altKey && /^[1-9]$/.test(e.key)) {
+        const item = NAV[Number(e.key) - 1];
+        if (item) router.push(`/project/${id}${item.href}`);
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [id]);
+  }, [id, router]);
 
   const nav = NAV.map((item) => {
     const href = base + item.href;

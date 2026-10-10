@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CommandButton } from "./CommandButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./ui";
 
@@ -15,7 +16,8 @@ export function AppHeader() {
             Projects
           </Link>
         </nav>
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-1.5">
+          <CommandButton />
           <ThemeToggle />
         </div>
       </div>

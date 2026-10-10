@@ -200,9 +200,12 @@ body {
   background: color-mix(in oklab, var(--brand) 25%, transparent);
 }
 
-:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
+@layer base {
+  /* In the base layer, so a component or utility can still turn it off. */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
 }
 
 @layer components {

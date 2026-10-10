@@ -7,6 +7,7 @@ import { catalogue } from "@/lib/catalogue";
 import { HIGH_CONFIDENCE, isCounted, matchFactor, capConfidence, normaliseUnit, NO_SECTION, type BomLine } from "@/lib/engine";
 import { factorValue, tonnes } from "@/lib/format";
 import { actions, newId } from "@/lib/store";
+import { toast } from "@/lib/toast";
 import { Icon } from "../Icon";
 import { ConfidenceBadge, EmptyState, FactorBadges, StatusBadge, Swatch } from "../ui";
 import { useCurrentProject } from "./context";
@@ -235,10 +236,22 @@ export function LinesTable() {
       {selectedIds.length > 0 && (
         <div className="rise sticky top-16 z-20 flex flex-wrap items-center gap-2 rounded-xl border border-line bg-ink px-3 py-2 text-bg shadow-md">
           <span className="px-1 text-sm font-medium">{selectedIds.length} selected</span>
-          <button className="btn btn-sm" onClick={() => actions.setStatus(id, selectedIds, "accepted")}>
+          <button
+            className="btn btn-sm"
+            onClick={() => {
+              actions.setStatus(id, selectedIds, "accepted");
+              toast(`${selectedIds.length} lines accepted.`, { undoProjectId: id });
+            }}
+          >
             <Icon name="check" size={14} /> Accept
           </button>
-          <button className="btn btn-sm" onClick={() => actions.setStatus(id, selectedIds, "rejected")}>
+          <button
+            className="btn btn-sm"
+            onClick={() => {
+              actions.setStatus(id, selectedIds, "rejected");
+              toast(`${selectedIds.length} lines rejected.`, { undoProjectId: id });
+            }}
+          >
             <Icon name="x" size={14} /> Reject
           </button>
           <button className="btn btn-sm" onClick={() => actions.setStatus(id, selectedIds, "pending")}>
@@ -254,10 +267,9 @@ export function LinesTable() {
           <button
             className="btn btn-sm btn-danger"
             onClick={() => {
-              if (window.confirm(`Delete ${selectedIds.length} lines? You can undo this.`)) {
-                actions.removeLines(id, selectedIds);
-                setSelected(new Set());
-              }
+              actions.removeLines(id, selectedIds);
+              toast(`${selectedIds.length} lines deleted.`, { undoProjectId: id });
+              setSelected(new Set());
             }}
           >
             <Icon name="trash" size={14} /> Delete

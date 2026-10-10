@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppFooter } from "@/components/AppFooter";
 import { AppHeader } from "@/components/AppHeader";
+import { CommandPalette } from "@/components/CommandPalette";
 import { HatchDefs } from "@/components/Hatch";
+import { Toaster } from "@/components/Toaster";
 import { themeBootScript } from "@/lib/theme-boot";
 import "./globals.css";
 
@@ -36,6 +38,8 @@ export default function RootLayout({
         <HatchDefs />
         <AppHeader />
         <div className="flex flex-1 flex-col">{children}</div>
+        <CommandPalette />
+        <Toaster />
         <AppFooter />
       </body>
     </html>

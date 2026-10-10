@@ -2,10 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { readCsvTable, autoMapping, tableToLines } from "@/lib/bom/parse";
-import { catalogue } from "@/lib/catalogue";
 import { DEMOS, type Demo } from "@/lib/demos";
-import { actions } from "@/lib/store";
+import { loadDemo } from "@/lib/load-demo";
 import { Icon } from "./Icon";
 
 export function DemoGallery() {
@@ -15,11 +13,7 @@ export function DemoGallery() {
   async function open(demo: Demo) {
     setBusy(demo.id);
     try {
-      const text = await (await fetch(demo.file)).text();
-      const table = readCsvTable(text);
-      const file = demo.file.split("/").pop()!;
-      const lines = tableToLines(table, autoMapping(table.headers), file, "csv", catalogue);
-      const id = actions.createProject({ name: demo.title, document: { file, provenance: "Synthetic demo data, parsed in your browser." }, lines });
+      const id = await loadDemo(demo);
       router.push(`/project/${id}/lines`);
     } finally {
       setBusy(null);
