@@ -608,3 +608,34 @@ body {
     transition-duration: 1ms !important;
   }
 }
+
+@media print {
+  /* Paper is white whatever the screen theme is. */
+  :root,
+  :root[data-theme="dark"] {
+    --bg: #ffffff;
+    --bg-elev: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f4f2ec;
+    --surface-3: #e9e6dd;
+    --ink: #111111;
+    --ink-2: #3c3f47;
+    --ink-3: #6b6f79;
+    --line: #dedbd2;
+    --line-2: #cfcbc0;
+    --hatch-ink: rgb(22 24 29 / 0.28);
+    --brand: #0f6e4e;
+    color-scheme: light;
+  }
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+  body {
+    font-size: 12px;
+  }
+  header.sticky,
+  .no-print {
+    display: none !important;
+  }
+}

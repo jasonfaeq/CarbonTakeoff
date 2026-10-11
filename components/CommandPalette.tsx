@@ -119,6 +119,7 @@ export function CommandPalette() {
             router.push(`${base}/scenarios`);
           },
         },
+        { id: "report", group: project.name, label: "Open the printable report", icon: "printer", run: go(`/report/${project.id}`) },
         { id: "undo", group: project.name, label: "Undo", icon: "undo", keys: "Ctrl Z", run: () => actions.undo(project.id) },
         { id: "redo", group: project.name, label: "Redo", icon: "redo", keys: "Ctrl Shift Z", run: () => actions.redo(project.id) },
         {

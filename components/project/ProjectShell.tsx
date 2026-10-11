@@ -118,6 +118,9 @@ export function ProjectShell({ children }: { children: ReactNode }) {
             )}
           </div>
           <div className="flex items-center gap-4">
+            <Link href={`/report/${id}`} className="btn btn-sm">
+              <Icon name="printer" size={14} /> Report
+            </Link>
             <div className="flex gap-1">
               <button
                 className="btn btn-ghost btn-sm btn-icon"
