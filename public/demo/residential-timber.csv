@@ -1,0 +1,27 @@
+# SYNTHETIC DEMO DATA. Made up for Carbon Takeoff: the same 6-storey, 3,180 m2 GIA residential block as the concrete-frame demo, with a mass-timber frame. Quantities are illustrative and the prices are invented.
+section,description,quantity,unit,kg_per_unit,unit_price_eur
+Substructure,Bored piles concrete C30/37,300,m3,,145
+Substructure,Pile reinforcement B500B,29,t,,1010
+Substructure,Ground slab concrete C30/37,330,m3,,138
+Substructure,Ground slab reinforcement B500B,24,t,,1000
+Substructure,Blinding concrete C20/25,48,m3,,112
+Substructure,LDPE damp-proof membrane 1200 gauge,1250,m2,0.3,1.4
+Substructure,Sub-base crushed stone Type 1,690,t,,19
+Frame,Glulam columns and beams GL24h,118,t,,1450
+Frame,CLT floor panels 160 mm,205,t,,1150
+Frame,CLT core and party walls 120 mm,104,t,,1100
+Frame,Galvanised steel connectors and brackets,9,t,,4800
+Upper floors,Sand-cement screed on CLT floors,132,m3,,160
+Upper floors,Mineral wool acoustic insulation,24,t,,1450
+Envelope,Timber rainscreen cladding,28,t,,2900
+Envelope,Mineral wool wall insulation,41,t,,1450
+Envelope,PIR roof insulation boards,14,t,,2900
+Envelope,Double glazed units,58,t,,3600
+Envelope,Aluminium window frames,21,t,,7800
+Envelope,Bitumen roofing membrane,9.5,t,,1900
+Internal,Plasterboard 15 mm fire-rated,142,t,,330
+Internal,Galvanised steel studs and tracks,18,t,,2200
+Internal,Timber doors and joinery,18,t,,2600
+Services,Copper pipework,4.2,t,,9800
+Services,PVC soil and waste pipes,6.8,t,,2400
+Services,Steel ductwork,11,t,,3200

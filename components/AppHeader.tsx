@@ -15,6 +15,9 @@ export function AppHeader() {
           <Link href="/" className="rounded-lg px-2.5 py-1.5 text-ink-2 hover:bg-surface-2 hover:text-ink">
             Projects
           </Link>
+          <Link href="/compare" className="rounded-lg px-2.5 py-1.5 text-ink-2 hover:bg-surface-2 hover:text-ink">
+            Compare
+          </Link>
         </nav>
         <div className="ml-auto flex items-center gap-1.5">
           <CommandButton />

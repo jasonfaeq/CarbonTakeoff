@@ -125,6 +125,12 @@ const RULES: Rule[] = [
   { test: /gravel|\bkies\b/i, factorId: "gravel", confidence: HIGH, reason: "Named as gravel" },
   { test: /\bsand\b/i, factorId: "sand", confidence: HIGH, reason: "Named as sand" },
   { test: /crushed|aggregate|backfill|hardcore|schotter|sub-?base/i, factorId: "aggregates-primary", confidence: HIGH, reason: "Named as aggregate" },
+  {
+    test: /\bclt\b|cross-laminated|glulam|\blvl\b|brettsperrholz|brettschichtholz/i,
+    factorId: "wood-primary",
+    confidence: MEDIUM,
+    reason: "Engineered timber: generic timber factor, glue and processing not distinguished",
+  },
   { test: /timber|formwork|\bwood\b|\bholz\b|schalung/i, factorId: "wood-primary", confidence: HIGH, reason: "Named as timber" },
 ];
 

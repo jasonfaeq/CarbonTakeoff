@@ -21,7 +21,7 @@ export function DemoGallery() {
   }
 
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {DEMOS.map((demo) => (
         <li key={demo.id} className="card flex flex-col p-5">
           <div className="flex items-center justify-between">

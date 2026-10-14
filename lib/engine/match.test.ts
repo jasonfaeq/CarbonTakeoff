@@ -64,6 +64,12 @@ describe("matchFactor", () => {
     expect(matchFactor("Transformer oil top-up").factorId).toBe("mineral-oil-primary");
   });
 
+  it("reads engineered timber at medium confidence", () => {
+    expect(matchFactor("CLT floor panels 160 mm").factorId).toBe("wood-primary");
+    expect(matchFactor("Glulam columns and beams GL24h").confidence).toBe(0.6);
+    expect(matchFactor("Timber doors and joinery").confidence).toBe(0.9);
+  });
+
   it("tells recycled asphalt from new", () => {
     expect(matchFactor("Recycled asphalt planings reused in base").factorId).toBe("asphalt-recycled");
     expect(matchFactor("Asphalt surface course SMA 10").factorId).toBe("asphalt-primary");

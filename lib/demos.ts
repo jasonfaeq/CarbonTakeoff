@@ -37,6 +37,14 @@ export const DEMOS: Demo[] = [
     file: "/demo/residential-concrete.csv",
   },
   {
+    id: "residential-timber",
+    title: "Residential block, mass timber",
+    subtitle: "The same block with a glulam and CLT frame",
+    sector: "Buildings",
+    icon: "building",
+    file: "/demo/residential-timber.csv",
+  },
+  {
     id: "road-reconstruction",
     title: "Rural road reconstruction",
     subtitle: "2.4 km full depth: pavement, drainage, kerbs, barrier",
