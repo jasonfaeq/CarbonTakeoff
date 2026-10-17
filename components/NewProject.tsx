@@ -6,6 +6,7 @@ import { ImportDialog } from "@/components/ImportDialog";
 import { autoMapping, BomParseError, missingFields, readCsvTable, tableToLines, type ColumnMapping, type RawTable } from "@/lib/bom/parse";
 import { readXlsxTable } from "@/lib/bom/xlsx";
 import { catalogue } from "@/lib/catalogue";
+import { readProjectFile, ShareError } from "@/lib/share";
 import { actions } from "@/lib/store";
 import { Icon } from "./Icon";
 
@@ -38,6 +39,15 @@ export function NewProject() {
   async function read(file: File | { name: string; text: string }) {
     setError(null);
     setPending(null);
+    if (file instanceof File && file.name.toLowerCase().endsWith(".json")) {
+      try {
+        const id = actions.importProject(readProjectFile(JSON.parse(await file.text())));
+        router.push(`/project/${id}`);
+      } catch (e) {
+        setError(e instanceof ShareError ? e.message : "This JSON file could not be read as a project.");
+      }
+      return;
+    }
     try {
       const kind = /\.xlsx$/i.test(file.name) ? "xlsx" : "csv";
       const table =
@@ -73,7 +83,7 @@ export function NewProject() {
       <input
         ref={input}
         type="file"
-        accept=".csv,.xlsx,text/csv"
+        accept=".csv,.xlsx,.json,text/csv"
         className="sr-only"
         tabIndex={-1}
         aria-label="Upload a CSV or XLSX bill of materials"

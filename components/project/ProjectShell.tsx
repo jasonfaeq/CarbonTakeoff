@@ -9,6 +9,7 @@ import { Icon, type IconName } from "../Icon";
 import { PlaceholderNotice } from "../ui";
 import { useCurrentProject } from "./context";
 import { LineDrawer } from "./LineDrawer";
+import { ProjectActions } from "./ProjectActions";
 
 interface NavItem {
   href: string;
@@ -118,6 +119,7 @@ export function ProjectShell({ children }: { children: ReactNode }) {
             )}
           </div>
           <div className="flex items-center gap-4">
+            <ProjectActions project={project} />
             <Link href={`/report/${id}`} className="btn btn-sm">
               <Icon name="printer" size={14} /> Report
             </Link>

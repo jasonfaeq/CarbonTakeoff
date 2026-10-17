@@ -10,6 +10,7 @@ import { actions, useProjects } from "@/lib/store";
 import { setTheme } from "@/lib/theme";
 import { toast } from "@/lib/toast";
 import { Icon, type IconName } from "./Icon";
+import { copyShareLink, exportCsv, exportJson } from "./project/ProjectActions";
 
 interface Command {
   id: string;
@@ -120,6 +121,9 @@ export function CommandPalette() {
           },
         },
         { id: "report", group: project.name, label: "Open the printable report", icon: "printer", run: go(`/report/${project.id}`) },
+        { id: "share", group: project.name, label: "Copy a share link", icon: "link", run: () => copyShareLink(project) },
+        { id: "export-csv", group: project.name, label: "Export results as CSV", icon: "download", run: () => exportCsv(project) },
+        { id: "export-json", group: project.name, label: "Export the project file", icon: "download", run: () => exportJson(project) },
         { id: "undo", group: project.name, label: "Undo", icon: "undo", keys: "Ctrl Z", run: () => actions.undo(project.id) },
         { id: "redo", group: project.name, label: "Redo", icon: "redo", keys: "Ctrl Shift Z", run: () => actions.redo(project.id) },
         {

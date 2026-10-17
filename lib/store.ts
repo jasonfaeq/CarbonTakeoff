@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { BomLine, LineStatus, Switches } from "@/lib/engine";
+import type { SharedProject } from "@/lib/share";
 
 export interface DocumentInfo {
   file: string;
@@ -191,6 +192,16 @@ export const actions = {
   createProject(init: NewProject): string {
     load();
     const project = blankProject(init);
+    state = { ...state, projects: [project, ...state.projects] };
+    emit();
+    return project.id;
+  },
+  /** Save a project that arrived as a file or a share link, under a new id. */
+  importProject(shared: SharedProject): string {
+    load();
+    const now = new Date().toISOString();
+    const base = blankProject({ name: shared.name, document: null, lines: [] });
+    const project = migrateProject({ ...base, ...shared, id: base.id, createdAt: now, updatedAt: now });
     state = { ...state, projects: [project, ...state.projects] };
     emit();
     return project.id;
