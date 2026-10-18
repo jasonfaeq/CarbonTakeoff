@@ -23,7 +23,7 @@ export function DemoGallery() {
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {DEMOS.map((demo) => (
-        <li key={demo.id} className="card flex flex-col p-5">
+        <li key={demo.id} className="card flex min-w-0 flex-col p-5">
           <div className="flex items-center justify-between">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-surface-2 text-ink-2">
               <Icon name={demo.icon} size={19} />

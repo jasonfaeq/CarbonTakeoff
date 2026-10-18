@@ -46,10 +46,10 @@ export function ProjectActions({ project }: { project: Project }) {
   return (
     <div ref={ref} className="relative flex gap-1.5">
       <button className="btn btn-sm" onClick={() => copyShareLink(project)} title="Copy a link that opens a copy of this project">
-        <Icon name="link" size={14} /> Share
+        <Icon name="link" size={14} /> <span className="hidden sm:inline">Share</span>
       </button>
       <button className="btn btn-sm" aria-expanded={open} aria-haspopup="menu" onClick={() => setOpen((o) => !o)}>
-        <Icon name="download" size={14} /> Export <Icon name="chevron-down" size={13} />
+        <Icon name="download" size={14} /> <span className="hidden sm:inline">Export</span> <Icon name="chevron-down" size={13} />
       </button>
       {open && (
         <div role="menu" className="rise absolute top-full right-0 z-30 mt-1.5 w-64 rounded-xl border border-line bg-surface p-1.5 shadow-md">

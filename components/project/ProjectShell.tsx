@@ -118,10 +118,10 @@ export function ProjectShell({ children }: { children: ReactNode }) {
               </p>
             )}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:gap-4">
             <ProjectActions project={project} />
             <Link href={`/report/${id}`} className="btn btn-sm">
-              <Icon name="printer" size={14} /> Report
+              <Icon name="printer" size={14} /> <span className="hidden sm:inline">Report</span>
             </Link>
             <div className="flex gap-1">
               <button
@@ -143,7 +143,7 @@ export function ProjectShell({ children }: { children: ReactNode }) {
                 <Icon name="redo" size={15} />
               </button>
             </div>
-            <div className="text-right" aria-live="polite">
+            <div className="ml-auto text-right" aria-live="polite">
               <div className="flex items-baseline justify-end gap-1.5">
                 <span className="num text-[28px] leading-none font-semibold tracking-tight">{tonnes(totals.kgCO2e)}</span>
                 <span className="text-sm text-ink-3">tCO₂e</span>

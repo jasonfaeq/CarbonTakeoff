@@ -29,7 +29,7 @@ export function ProjectList() {
         const totals = computeTotals(p.lines, catalogue, { autoAcceptHigh: p.autoAcceptHigh });
         const decided = p.lines.length - totals.pendingLines;
         return (
-          <li key={p.id} className="card group relative flex flex-col p-5 transition-shadow hover:shadow-md">
+          <li key={p.id} className="card group relative flex min-w-0 flex-col p-5 transition-shadow hover:shadow-md">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <Link href={`/project/${p.id}`} className="block truncate font-semibold after:absolute after:inset-0">
