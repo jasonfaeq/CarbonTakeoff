@@ -152,6 +152,7 @@ export function CommandPalette() {
     }
     out.push({ id: "home", group: "Go to", label: "All projects", icon: "folder", run: go("/") });
     out.push({ id: "compare", group: "Go to", label: "Compare projects", icon: "columns", run: go("/compare") });
+    out.push({ id: "factors", group: "Go to", label: "Factor library", icon: "book", run: go("/factors") });
     for (const p of projects) {
       if (p.id === project?.id) continue;
       out.push({ id: `open-${p.id}`, group: "Open project", label: p.name, hint: p.document?.file, icon: "file", run: go(`/project/${p.id}`) });
