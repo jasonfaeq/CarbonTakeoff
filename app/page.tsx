@@ -24,7 +24,7 @@ export default function Home() {
       <div className="mt-6">
         <NewProject />
       </div>
-      <section className="mt-12">
+      <section id="demos" className="mt-12 scroll-mt-20">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-lg font-semibold tracking-tight">Demo projects</h2>
           <span className="text-xs text-ink-3">Synthetic data</span>

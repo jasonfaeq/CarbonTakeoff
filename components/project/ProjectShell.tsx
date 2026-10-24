@@ -115,6 +115,7 @@ export function ProjectShell({ children }: { children: ReactNode }) {
               <p className="mt-1 flex items-center gap-1.5 truncate text-sm text-ink-3">
                 <Icon name="file" size={14} />
                 {document.file} · {document.provenance}
+                {document.pagesScanned !== undefined && ` ${document.pagesSent} of ${document.pagesScanned} pages sent to the model.`}
               </p>
             )}
           </div>

@@ -8,6 +8,9 @@ export interface DocumentInfo {
   file: string;
   /** How the lines were made, shown next to them: parsed, extracted, typed in. */
   provenance: string;
+  /** For an extracted document: pages read, and pages sent to the model. */
+  pagesScanned?: number;
+  pagesSent?: number;
 }
 
 /** A named set of alternative factors, line id to factor id. */
