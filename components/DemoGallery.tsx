@@ -28,8 +28,13 @@ export function DemoGallery() {
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-surface-2 text-ink-2">
               <Icon name={demo.icon} size={19} />
             </span>
-            <span className="badge" data-tone="outline">
-              {demo.sector}
+            <span className="flex gap-1">
+              <span className="badge" data-tone={demo.kind === "spec" ? "info" : "brand"}>
+                {demo.kind === "spec" ? "Spec PDF" : "BOM"}
+              </span>
+              <span className="badge" data-tone="outline">
+                {demo.sector}
+              </span>
             </span>
           </div>
           <h3 className="mt-4 font-semibold">{demo.title}</h3>
@@ -39,7 +44,7 @@ export function DemoGallery() {
               {busy === demo.id ? "Opening…" : "Open demo"}
             </button>
             <a className="btn btn-ghost btn-sm" href={demo.file} download>
-              <Icon name="download" size={14} /> CSV
+              <Icon name="download" size={14} /> {demo.kind === "spec" ? "PDF" : "CSV"}
             </a>
           </div>
         </li>
