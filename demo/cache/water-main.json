@@ -1,0 +1,143 @@
+{
+  "provenance": "Manual extraction, written by hand for this demo so it works without an API key. Not LLM output. Same schema as live extraction, and every quote was machine-checked against the document.",
+  "file": "water-main-spec.txt",
+  "kind": "text",
+  "pagesScanned": 2,
+  "pagesSent": 2,
+  "pages": {
+    "1": "SYNTHETIC DEMO DOCUMENT. Written for Carbon Takeoff. The project, the site and the parties do not exist, and all quantities are illustrative.\n\nSPECIFICATION WM-112 (SYNTHETIC): WATER MAIN RENEWAL, EXAMPLE VALLEY ROAD\n\n1 SCOPE\n\n1.1 The Works comprise the renewal of 3.2 km of trunk water main between the Example Valley service reservoir and the village distribution network, including bends, valves, chambers, connections and full road reinstatement.\n\n1.2 The existing cast iron main is abandoned in place and grouted at each end. Grouting of the abandoned main is measured separately under the Employer's own works and is not part of this specification.\n\n1.3 Working hours, traffic management and notices are covered by the contract conditions and are not repeated here. Where this specification and the drawings disagree, the Contractor shall raise a query before ordering.\n\n2 PIPE AND FITTINGS\n\n2.1 The Contractor shall supply and lay 3,200 m of PE100 SDR11 pipe, outside diameter 315 mm, with a mass of 26.4 kg/m. Pipe shall be delivered in 12 m lengths and butt fused on site by certified operatives.\n\n2.2 Ductile iron fittings for the connections at each end and at the valve positions: allow 7.8 t of ductile iron fittings, flanged, PN16, coated to the water company's standard.\n\n2.3 Electrofusion couplers, tapping tees and end caps are included in the pipe rates and need not be listed separately.\n\n3 TRENCH, BEDDING AND BACKFILL\n\n3.1 Trenches shall be excavated to the depths on the drawings, with a minimum cover of 1.0 m to the crown of the pipe. Excavated material that does not meet the backfill specification goes off site to a licensed facility.\n\n3.2 Bedding and surround: provide 2,900 t of sand 0/4 as pipe bedding and surround, compacted in layers of no more than 150 mm.\n\n3.3 Above the surround, where the main runs in the carriageway, backfill with 6,800 t of crushed aggregate Type 1, compacted to the requirements of the highway authority.\n\n3.4 A geotextile separator shall be laid between the bedding and the backfill in soft ground. Allow 3,800 m2 of geotextile, 300 g/m2, with 300 mm laps.\n\n3.5 Temporary trench support shall be by steel trench sheets taken from the Contractor's own stock and removed as the backfill rises. They remain the Contractor's property and are not part of the permanent works.\n\n4 STRUCTURES\n\n4.1 Thrust blocks at horizontal and vertical bends: 46 m3 of concrete C25/30, cast against undisturbed ground, with 2.1 t of reinforcing steel B500B to the bending schedules.\n\n4.2 Valve and washout chambers: supply and install 9 precast concrete chambers, with a combined mass of 54 t, complete with cover slabs and access steps.\n\n4.3 Chamber covers and frames shall be ductile iron to the highway authority's load class. Covers are supplied by the Employer and are excluded.\n\n5 REINSTATEMENT\n\n",
+    "2": "5.1 Road reinstatement over the trench shall match the existing construction. Allow 1,150 t of asphalt surface and binder course for the permanent reinstatement, laid hot and joints sealed.\n\n5.2 Verge and field crossings shall be reinstated with the excavated topsoil, seeded within one growing season.\n\n5.3 Marker posts shall be placed at every change of direction and at 100 m intervals, and plastic warning tape shall be laid 300 mm above the crown of the pipe throughout. Quantities for marker posts and warning tape are at the Contractor's discretion.\n\n6 TESTING AND RECORDS\n\n6.1 Each section shall be pressure tested to the water company's procedure and disinfected before connection. Records of fusion joints, tests and as-laid positions shall be handed over within ten working days of completion of each section.\n\n6.2 The Contractor shall return, with the tender, environmental product declarations for the pipe, the concrete and the asphalt where available. Declarations need not be third-party verified at tender stage.\n\nEND OF SPECIFICATION WM-112 (SYNTHETIC DEMO DOCUMENT)\n"
+  },
+  "lines": [
+    {
+      "material": "PE pipe",
+      "description": "PE100 SDR11 pipe, OD 315 mm",
+      "quantity": 3200,
+      "unit": "m",
+      "page": 1,
+      "source_snippet": "supply and lay 3,200 m of PE100 SDR11 pipe, outside diameter 315 mm, with a mass of 26.4 kg/m",
+      "confidence": 0.95,
+      "suggested_factor_id": "pipe-pehd",
+      "kg_per_unit": 26.4,
+      "unit_price_eur": null,
+      "section": "Pipe and fittings"
+    },
+    {
+      "material": "Ductile iron",
+      "description": "Ductile iron fittings, flanged PN16",
+      "quantity": 7.8,
+      "unit": "t",
+      "page": 1,
+      "source_snippet": "allow 7.8 t of ductile iron fittings",
+      "confidence": 0.85,
+      "suggested_factor_id": null,
+      "kg_per_unit": null,
+      "unit_price_eur": null,
+      "section": "Pipe and fittings"
+    },
+    {
+      "material": "Sand",
+      "description": "Sand 0/4 pipe bedding and surround",
+      "quantity": 2900,
+      "unit": "t",
+      "page": 1,
+      "source_snippet": "provide 2,900 t of sand 0/4 as pipe bedding and surround",
+      "confidence": 0.95,
+      "suggested_factor_id": "sand",
+      "kg_per_unit": null,
+      "unit_price_eur": null,
+      "section": "Trench, bedding and backfill"
+    },
+    {
+      "material": "Aggregate",
+      "description": "Crushed aggregate Type 1 backfill",
+      "quantity": 6800,
+      "unit": "t",
+      "page": 1,
+      "source_snippet": "backfill with 6,800 t of crushed aggregate Type 1",
+      "confidence": 0.95,
+      "suggested_factor_id": "aggregates-primary",
+      "kg_per_unit": null,
+      "unit_price_eur": null,
+      "section": "Trench, bedding and backfill"
+    },
+    {
+      "material": "Geotextile",
+      "description": "Geotextile separator 300 g/m2",
+      "quantity": 3800,
+      "unit": "m2",
+      "page": 1,
+      "source_snippet": "Allow 3,800 m2 of geotextile, 300 g/m2",
+      "confidence": 0.9,
+      "suggested_factor_id": "geotextile",
+      "kg_per_unit": 0.3,
+      "unit_price_eur": null,
+      "section": "Trench, bedding and backfill"
+    },
+    {
+      "material": "Concrete",
+      "description": "Thrust blocks concrete C25/30",
+      "quantity": 46,
+      "unit": "m3",
+      "page": 1,
+      "source_snippet": "46 m3 of concrete C25/30",
+      "confidence": 0.95,
+      "suggested_factor_id": "concrete-c25-30",
+      "kg_per_unit": null,
+      "unit_price_eur": null,
+      "section": "Structures"
+    },
+    {
+      "material": "Reinforcing steel",
+      "description": "Thrust block reinforcing steel B500B",
+      "quantity": 2.1,
+      "unit": "t",
+      "page": 1,
+      "source_snippet": "2.1 t of reinforcing steel B500B",
+      "confidence": 0.95,
+      "suggested_factor_id": "rebar",
+      "kg_per_unit": null,
+      "unit_price_eur": null,
+      "section": "Structures"
+    },
+    {
+      "material": "Precast concrete",
+      "description": "Precast concrete valve and washout chambers (9 no.)",
+      "quantity": 54,
+      "unit": "t",
+      "page": 1,
+      "source_snippet": "9 precast concrete chambers, with a combined mass of 54 t",
+      "confidence": 0.8,
+      "suggested_factor_id": "concrete-average",
+      "kg_per_unit": null,
+      "unit_price_eur": null,
+      "section": "Structures"
+    },
+    {
+      "material": "Asphalt",
+      "description": "Asphalt surface and binder course, road reinstatement",
+      "quantity": 1150,
+      "unit": "t",
+      "page": 2,
+      "source_snippet": "Allow 1,150 t of asphalt surface and binder course",
+      "confidence": 0.95,
+      "suggested_factor_id": "asphalt-primary",
+      "kg_per_unit": null,
+      "unit_price_eur": null,
+      "section": "Reinstatement"
+    },
+    {
+      "material": "Warning tape",
+      "description": "Plastic warning tape above the pipe",
+      "quantity": null,
+      "unit": "m",
+      "page": 2,
+      "source_snippet": "plastic warning tape shall be laid 300 mm above the crown of the pipe throughout",
+      "confidence": 0.5,
+      "suggested_factor_id": null,
+      "kg_per_unit": null,
+      "unit_price_eur": null,
+      "section": "Reinstatement"
+    }
+  ]
+}

@@ -30,7 +30,7 @@ export function DemoGallery() {
             </span>
             <span className="flex gap-1">
               <span className="badge" data-tone={demo.kind === "spec" ? "info" : "brand"}>
-                {demo.kind === "spec" ? "Spec PDF" : "BOM"}
+                {demo.kind === "bom" ? "BOM" : demo.file.endsWith(".pdf") ? "Spec PDF" : "Spec text"}
               </span>
               <span className="badge" data-tone="outline">
                 {demo.sector}
@@ -44,7 +44,7 @@ export function DemoGallery() {
               {busy === demo.id ? "Opening…" : "Open demo"}
             </button>
             <a className="btn btn-ghost btn-sm" href={demo.file} download>
-              <Icon name="download" size={14} /> {demo.kind === "spec" ? "PDF" : "CSV"}
+              <Icon name="download" size={14} /> {demo.file.split(".").pop()!.toUpperCase()}
             </a>
           </div>
         </li>

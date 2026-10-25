@@ -1,0 +1,20 @@
+# SYNTHETIC DEMO DATA. Made up for Carbon Takeoff: a single-storey logistics warehouse, 12,000 m2 GIA, steel portal frame. Quantities are illustrative and the prices are invented.
+section,description,quantity,unit,kg_per_unit,unit_price_eur
+Frame,Structural steel portal frames S355,620,t,,2350
+Frame,Galvanised steel purlins and side rails,180,t,,2500
+Substructure,Pad foundations concrete C30/37,380,m3,,140
+Substructure,Pad foundation reinforcement B500B,26,t,,1000
+Substructure,Sub-base crushed stone Type 1,9600,t,,18
+Floor,Ground-bearing slab concrete C32/40,2400,m3,,146
+Floor,Steel fibre reinforcement to slab,72,t,,1750
+Floor,LDPE slip membrane,12500,m2,0.2,0.9
+Envelope,PIR insulated roof panels steel faced,96,t,,3100
+Envelope,PIR insulated wall panels steel faced,64,t,,3200
+Envelope,Polycarbonate rooflights,6,t,,9200
+Envelope,Aluminium curtain wall frames,8,t,,8100
+Envelope,Glazing to offices,14,t,,3400
+Yard,Asphalt yard surfacing,4200,t,,74
+Yard,Precast concrete kerbs,1200,m,62,19
+Yard,Dock levellers steel,24,t,,6500
+Drainage,PVC rainwater pipes,3.2,t,,2600
+Drainage,HDPE surface water pipe DN450,620,m,11.5,72

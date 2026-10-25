@@ -33,6 +33,15 @@ export const DEMOS: Demo[] = [
     file: "/demo/wind-spec.pdf",
   },
   {
+    id: "battery-storage",
+    title: "Battery storage, 20 MW / 40 MWh",
+    subtitle: "LFP modules, enclosures, inverters and the grid connection",
+    sector: "Energy",
+    icon: "battery",
+    kind: "bom",
+    file: "/demo/battery-storage.csv",
+  },
+  {
     id: "solar-park",
     title: "Solar park, 12 MWp",
     subtitle: "Ramming piles, mounting, cabling, inverter stations",
@@ -60,6 +69,15 @@ export const DEMOS: Demo[] = [
     file: "/demo/residential-timber.csv",
   },
   {
+    id: "warehouse",
+    title: "Logistics warehouse, 12,000 m²",
+    subtitle: "Steel portal frame, fibre-reinforced slab, insulated panels",
+    sector: "Buildings",
+    icon: "warehouse",
+    kind: "bom",
+    file: "/demo/warehouse.csv",
+  },
+  {
     id: "road-reconstruction",
     title: "Rural road reconstruction",
     subtitle: "2.4 km full depth: pavement, drainage, kerbs, barrier",
@@ -67,5 +85,14 @@ export const DEMOS: Demo[] = [
     icon: "road",
     kind: "bom",
     file: "/demo/road-reconstruction.csv",
+  },
+  {
+    id: "water-main",
+    title: "Water main renewal specification",
+    subtitle: "3.2 km of PE pipe in a plain-text spec, read by extraction",
+    sector: "Infrastructure",
+    icon: "droplet",
+    kind: "spec",
+    file: "/demo/water-main-spec.txt",
   },
 ];

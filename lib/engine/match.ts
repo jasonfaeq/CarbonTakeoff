@@ -103,6 +103,18 @@ const RULES: Rule[] = [
     reason: "Aluminium profile: aluminium section factor",
   },
   { test: /alumini?um|\bal\b/i, factorId: "aluminium-primary", confidence: MEDIUM, reason: "Aluminium: metal only, primary aluminium proxy" },
+  {
+    test: /batter(y|ies)|li-?ion|lithium|\blfp\b|\bnmc\b/i,
+    factorId: "batteries-li-ion",
+    confidence: LOW,
+    reason: "Battery modules: generic Li-ion factor, a weak proxy for grid-scale cells",
+  },
+  {
+    test: /inverter|power conversion|wechselrichter/i,
+    factorId: "electrical-large",
+    confidence: LOW,
+    reason: "No inverter factor: large electrical equipment as a weak proxy",
+  },
   { test: /glass|glazing|glazed|\bigu\b|verglasung/i, factorId: "glass", confidence: MEDIUM, reason: "Glazing: general glass factor" },
   { test: /geotex|geovlies|fleece|vlies/i, factorId: "geotextile", confidence: HIGH, reason: "Named as geotextile" },
   { test: /\bpvc\b/i, factorId: "pvc-primary", confidence: HIGH, reason: "Named as PVC" },

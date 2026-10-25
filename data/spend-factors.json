@@ -69,7 +69,8 @@
     "ldpe-primary": "326113",
     "ldpe-recycled": "326113",
     "pipe-pehd": "326122",
-    "pipe-pvc": "326122"
+    "pipe-pvc": "326122",
+    "batteries-li-ion": "335910"
   },
   "factors": [
     {
@@ -202,6 +203,12 @@
       "naics": "335313",
       "title": "Switchgear and Switchboard Apparatus",
       "value": 0.17,
+      "unit": "kg CO2e/USD"
+    },
+    {
+      "naics": "335910",
+      "title": "Battery Manufacturing",
+      "value": 0.32,
       "unit": "kg CO2e/USD"
     },
     {

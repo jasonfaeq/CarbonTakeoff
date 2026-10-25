@@ -1,0 +1,16 @@
+# SYNTHETIC DEMO DATA. Made up for Carbon Takeoff: a 20 MW / 40 MWh battery energy storage site. Quantities and delivery distances are illustrative and the prices are invented.
+section,description,quantity,unit,kg_per_unit,unit_price_eur,transport_mode,transport_km
+Battery system,Battery modules LFP in racks,245,t,,58000,container ship,19400
+Battery system,Galvanised steel battery enclosures (20 no.),196,t,,4100,hgv-articulated,620
+Battery system,Power conversion system inverter skids (10 no.),38,t,,26000,hgv-articulated,840
+Grid connection,Step-up transformer 40 MVA 33/132 kV,62,t,,14200,rail,960
+Grid connection,Transformer oil,14,t,,1450,hgv-average,310
+Grid connection,MV cable 3 x 1 x 240 mm2 aluminium conductor,2600,m,1.95,28,hgv-articulated,640
+Grid connection,DC cable 2 x 1 x 185 mm2 copper conductor,4200,m,3.3,48,hgv-average,640
+Grid connection,HDPE cable ducts DN160,1800,m,2.1,9,hgv-average,210
+Civil,Foundation slabs concrete C30/37,420,m3,,138,hgv-rigid,22
+Civil,Foundation reinforcement B500B,38,t,,990,hgv-articulated,190
+Civil,Crushed stone platform 0/45,3600,t,,17,hgv-articulated,30
+Civil,Geotextile under platform,5200,m2,,1.8,hgv-average,310
+Civil,Galvanised steel palisade fence,34,t,,2300,hgv-articulated,420
+Civil,Fence post footings concrete C20/25,28,m3,,115,hgv-rigid,22

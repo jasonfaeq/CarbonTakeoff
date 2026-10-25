@@ -70,6 +70,12 @@ describe("matchFactor", () => {
     expect(matchFactor("Timber doors and joinery").confidence).toBe(0.9);
   });
 
+  it("treats battery modules and inverters as weak proxies, and keeps their enclosures as steel", () => {
+    expect(matchFactor("Battery modules LFP in racks")).toMatchObject({ factorId: "batteries-li-ion", confidence: 0.3 });
+    expect(matchFactor("Power conversion system inverter skids").factorId).toBe("electrical-large");
+    expect(matchFactor("Galvanised steel battery enclosures").factorId).toBe("steel-section-bof");
+  });
+
   it("tells recycled asphalt from new", () => {
     expect(matchFactor("Recycled asphalt planings reused in base").factorId).toBe("asphalt-recycled");
     expect(matchFactor("Asphalt surface course SMA 10").factorId).toBe("asphalt-primary");

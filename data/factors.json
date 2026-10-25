@@ -1190,6 +1190,46 @@
       "applicability": "direct",
       "alternatives": [],
       "note": null
+    },
+    {
+      "id": "batteries-li-ion",
+      "name": "Batteries, Li-ion",
+      "group": "Electrical equipment",
+      "value": 6300,
+      "unit": "kg CO2e/t",
+      "declaredUnit": "t",
+      "scope": "A1-A3 (assumed)",
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-25",
+      "status": "PLACEHOLDER",
+      "applicability": "proxy",
+      "alternatives": [],
+      "note": "Generic Li-ion batteries. A weak proxy for grid-scale battery modules."
+    },
+    {
+      "id": "construction-average",
+      "name": "Construction materials, average",
+      "group": "Other",
+      "value": 75,
+      "unit": "kg CO2e/t",
+      "declaredUnit": "t",
+      "scope": "A1-A3 (assumed)",
+      "source": "Placeholder",
+      "sourceName": "Synthetic placeholder value for development",
+      "tableRow": "n/a",
+      "versionYear": "dev",
+      "licence": "n/a",
+      "url": "",
+      "retrieved": "2026-10-25",
+      "status": "PLACEHOLDER",
+      "applicability": "proxy",
+      "alternatives": [],
+      "note": "Average of construction materials; only when nothing better fits."
     }
   ]
 }

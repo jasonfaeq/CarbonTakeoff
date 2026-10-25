@@ -1,0 +1,55 @@
+SYNTHETIC DEMO DOCUMENT. Written for Carbon Takeoff. The project, the site and the parties do not exist, and all quantities are illustrative.
+
+SPECIFICATION WM-112 (SYNTHETIC): WATER MAIN RENEWAL, EXAMPLE VALLEY ROAD
+
+1 SCOPE
+
+1.1 The Works comprise the renewal of 3.2 km of trunk water main between the Example Valley service reservoir and the village distribution network, including bends, valves, chambers, connections and full road reinstatement.
+
+1.2 The existing cast iron main is abandoned in place and grouted at each end. Grouting of the abandoned main is measured separately under the Employer's own works and is not part of this specification.
+
+1.3 Working hours, traffic management and notices are covered by the contract conditions and are not repeated here. Where this specification and the drawings disagree, the Contractor shall raise a query before ordering.
+
+2 PIPE AND FITTINGS
+
+2.1 The Contractor shall supply and lay 3,200 m of PE100 SDR11 pipe, outside diameter 315 mm, with a mass of 26.4 kg/m. Pipe shall be delivered in 12 m lengths and butt fused on site by certified operatives.
+
+2.2 Ductile iron fittings for the connections at each end and at the valve positions: allow 7.8 t of ductile iron fittings, flanged, PN16, coated to the water company's standard.
+
+2.3 Electrofusion couplers, tapping tees and end caps are included in the pipe rates and need not be listed separately.
+
+3 TRENCH, BEDDING AND BACKFILL
+
+3.1 Trenches shall be excavated to the depths on the drawings, with a minimum cover of 1.0 m to the crown of the pipe. Excavated material that does not meet the backfill specification goes off site to a licensed facility.
+
+3.2 Bedding and surround: provide 2,900 t of sand 0/4 as pipe bedding and surround, compacted in layers of no more than 150 mm.
+
+3.3 Above the surround, where the main runs in the carriageway, backfill with 6,800 t of crushed aggregate Type 1, compacted to the requirements of the highway authority.
+
+3.4 A geotextile separator shall be laid between the bedding and the backfill in soft ground. Allow 3,800 m2 of geotextile, 300 g/m2, with 300 mm laps.
+
+3.5 Temporary trench support shall be by steel trench sheets taken from the Contractor's own stock and removed as the backfill rises. They remain the Contractor's property and are not part of the permanent works.
+
+4 STRUCTURES
+
+4.1 Thrust blocks at horizontal and vertical bends: 46 m3 of concrete C25/30, cast against undisturbed ground, with 2.1 t of reinforcing steel B500B to the bending schedules.
+
+4.2 Valve and washout chambers: supply and install 9 precast concrete chambers, with a combined mass of 54 t, complete with cover slabs and access steps.
+
+4.3 Chamber covers and frames shall be ductile iron to the highway authority's load class. Covers are supplied by the Employer and are excluded.
+
+5 REINSTATEMENT
+
+5.1 Road reinstatement over the trench shall match the existing construction. Allow 1,150 t of asphalt surface and binder course for the permanent reinstatement, laid hot and joints sealed.
+
+5.2 Verge and field crossings shall be reinstated with the excavated topsoil, seeded within one growing season.
+
+5.3 Marker posts shall be placed at every change of direction and at 100 m intervals, and plastic warning tape shall be laid 300 mm above the crown of the pipe throughout. Quantities for marker posts and warning tape are at the Contractor's discretion.
+
+6 TESTING AND RECORDS
+
+6.1 Each section shall be pressure tested to the water company's procedure and disinfected before connection. Records of fusion joints, tests and as-laid positions shall be handed over within ten working days of completion of each section.
+
+6.2 The Contractor shall return, with the tender, environmental product declarations for the pipe, the concrete and the asphalt where available. Declarations need not be third-party verified at tender stage.
+
+END OF SPECIFICATION WM-112 (SYNTHETIC DEMO DOCUMENT)

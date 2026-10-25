@@ -1,5 +1,6 @@
 "use client";
 
+import waterMain from "@/demo/cache/water-main.json";
 import windSpec from "@/demo/cache/wind-spec.json";
 import { autoMapping, readCsvTable, tableToLines } from "@/lib/bom/parse";
 import { catalogue } from "@/lib/catalogue";
@@ -20,6 +21,7 @@ interface SpecCache {
 /** Cached extractions of the specification demos, built by scripts/build-demo-cache.ts. */
 const SPEC_CACHES: Record<string, SpecCache> = {
   "wind-spec": windSpec as SpecCache,
+  "water-main": waterMain as SpecCache,
 };
 
 /** Fetch or read a demo and save it as a new project, the same way an upload would. Returns the project id. */

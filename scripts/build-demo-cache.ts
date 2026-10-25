@@ -14,7 +14,10 @@ interface SpecDemo {
   manual: string;
 }
 
-const SPECS: SpecDemo[] = [{ id: "wind-spec", source: "public/demo/wind-spec.pdf", manual: "demo/wind-spec.manual.json" }];
+const SPECS: SpecDemo[] = [
+  { id: "wind-spec", source: "public/demo/wind-spec.pdf", manual: "demo/wind-spec.manual.json" },
+  { id: "water-main", source: "public/demo/water-main-spec.txt", manual: "demo/water-main.manual.json" },
+];
 
 const PROVENANCE =
   "Manual extraction, written by hand for this demo so it works without an API key. Not LLM output. Same schema as live extraction, and every quote was machine-checked against the document.";
