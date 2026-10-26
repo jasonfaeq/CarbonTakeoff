@@ -107,7 +107,7 @@ export function NewProject() {
       <button
         type="button"
         onClick={() => bomInput.current?.click()}
-        className="card group flex flex-col items-start gap-4 p-6 text-left transition-shadow hover:shadow-md"
+        className="card group flex flex-col items-start gap-4 p-6 text-left card-lift"
       >
         <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand-soft text-brand-soft-ink">
           <Icon name="upload" size={20} />
@@ -141,7 +141,7 @@ export function NewProject() {
         type="button"
         disabled={extracting}
         onClick={() => specInput.current?.click()}
-        className="card group flex flex-col items-start gap-4 p-6 text-left transition-shadow hover:shadow-md disabled:opacity-70"
+        className="card group flex flex-col items-start gap-4 p-6 text-left card-lift disabled:opacity-70"
       >
         <span className="grid h-11 w-11 place-items-center rounded-xl bg-info-soft text-info">
           <Icon name="sparkles" size={20} />

@@ -152,7 +152,7 @@ export function ScreeningNote({ className = "" }: { className?: string }) {
 
 export function Logo({ size = 28 }: { size?: number }) {
   return (
-    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 32 32" className="shrink-0">
+    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 32 32" className="logo shrink-0">
       <rect width="32" height="32" rx="9" style={{ fill: "var(--brand)" }} />
       <rect x="8" y="17" width="4" height="7" rx="1.2" style={{ fill: "var(--brand-ink)", opacity: 0.55 }} />
       <rect x="14" y="13" width="4" height="11" rx="1.2" style={{ fill: "var(--brand-ink)", opacity: 0.8 }} />

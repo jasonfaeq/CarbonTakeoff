@@ -188,7 +188,10 @@ html {
 }
 
 body {
-  background: var(--bg);
+  /* A faint green wash at the top of every page, like light on a drawing table. */
+  background:
+    radial-gradient(1100px 380px at 50% -140px, color-mix(in oklab, var(--brand-soft) 70%, transparent), transparent 70%) no-repeat,
+    var(--bg);
   color: var(--ink);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   font-size: 15px;
@@ -222,11 +225,82 @@ body {
     color: var(--ink-3);
   }
 
+  .eyebrow-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .eyebrow-mark::before {
+    content: "";
+    width: 1.1rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--brand);
+  }
+
   .card {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 14px;
     box-shadow: var(--shadow-sm);
+  }
+  .card-lift {
+    transition:
+      box-shadow 160ms,
+      transform 160ms,
+      border-color 160ms;
+  }
+  .card-lift:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-2);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Tick marks along the bottom of the header, like the edge of a scale rule. */
+  .ruler::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 6px;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(90deg, var(--line-2) 0 1px, transparent 1px 40px) bottom / 100% 6px no-repeat,
+      repeating-linear-gradient(90deg, var(--line-2) 0 1px, transparent 1px 8px) bottom / 100% 3px no-repeat;
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    opacity: 0.8;
+  }
+
+  .nav-link {
+    position: relative;
+  }
+  .nav-link[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    left: 0.65rem;
+    right: 0.65rem;
+    bottom: -0.75rem;
+    z-index: 1;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: var(--brand);
+  }
+
+  /* The logo's bars step up one after another on hover. */
+  .logo rect + rect {
+    transform-box: fill-box;
+    transform-origin: bottom;
+    transition: transform 260ms cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .logo-link:hover .logo rect:nth-child(2) {
+    transform: scaleY(1.3);
+  }
+  .logo-link:hover .logo rect:nth-child(3) {
+    transform: scaleY(1.2);
+    transition-delay: 50ms;
+  }
+  .logo-link:hover .logo rect:nth-child(4) {
+    transform: scaleY(1.1);
+    transition-delay: 100ms;
   }
 
   .btn {
@@ -264,6 +338,9 @@ body {
     background: var(--brand);
     border-color: var(--brand);
     color: var(--brand-ink);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      var(--shadow-sm);
   }
   .btn-primary:hover {
     background: var(--brand-2);
@@ -633,6 +710,7 @@ body {
   }
   body {
     font-size: 12px;
+    background: var(--bg);
   }
   header.sticky,
   .no-print {
