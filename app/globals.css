@@ -636,6 +636,31 @@ body {
     animation: slide-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
+  /* Drafting-paper grid, fading out towards the edges. */
+  .drafting {
+    background-color: var(--surface);
+    background-image:
+      linear-gradient(color-mix(in oklab, var(--brand) 9%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--brand) 9%, transparent) 1px, transparent 1px),
+      linear-gradient(color-mix(in oklab, var(--brand) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--brand) 4%, transparent) 1px, transparent 1px);
+    background-size:
+      40px 40px,
+      40px 40px,
+      8px 8px,
+      8px 8px;
+    background-position: -1px -1px;
+  }
+
+  .section-layer {
+    animation: layer-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .draw-in {
+    stroke-dasharray: 320;
+    animation: draw-in 700ms 250ms ease-out both;
+  }
+
   .swatch {
     display: inline-block;
     width: 0.75rem;
@@ -666,6 +691,22 @@ body {
 @keyframes fade {
   from {
     opacity: 0;
+  }
+}
+
+@keyframes layer-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+
+@keyframes draw-in {
+  from {
+    stroke-dashoffset: 320;
+  }
+  to {
+    stroke-dashoffset: 0;
   }
 }
 
