@@ -3,11 +3,14 @@ import { catalogue } from "@/lib/catalogue";
 import { extractedToBomLines } from "@/lib/extract/lines";
 import { selectPages } from "@/lib/extract/pages";
 import { pdfPages, textPages } from "@/lib/extract/pdf";
-import { MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from "@/lib/limits";
+import { MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL, RATE_LIMIT_PER_MINUTE } from "@/lib/limits";
 import { getProvider, liveExtractionAvailable, LlmError } from "@/lib/llm";
+import { createRateLimiter } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+const limiter = createRateLimiter(RATE_LIMIT_PER_MINUTE, 60_000);
 
 function fail(status: number, code: string, message: string, extra: Record<string, unknown> = {}) {
   return NextResponse.json({ code, message, ...extra }, { status });
@@ -18,6 +21,15 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  // every request costs tokens once a key is set, so cap it per ip
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+  const limit = limiter.check(ip);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { code: "rate_limited", message: `Limit of ${RATE_LIMIT_PER_MINUTE} extractions a minute. Try again in ${limit.retryAfterSeconds} s.` },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } },
+    );
+  }
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");
   if (!(file instanceof File)) return fail(400, "no_file", "No file in the upload.");
