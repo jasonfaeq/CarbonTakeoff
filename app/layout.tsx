@@ -5,6 +5,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { CommandPalette } from "@/components/CommandPalette";
 import { HatchDefs } from "@/components/Hatch";
 import { Toaster } from "@/components/Toaster";
+import { Welcome } from "@/components/Welcome";
 import { themeBootScript } from "@/lib/theme-boot";
 import "./globals.css";
 
@@ -39,6 +40,7 @@ export default function RootLayout({
         <AppHeader />
         <div className="flex flex-1 flex-col">{children}</div>
         <CommandPalette />
+        <Welcome />
         <Toaster />
         <AppFooter />
       </body>
