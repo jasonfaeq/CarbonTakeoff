@@ -11,6 +11,7 @@ import { setTheme } from "@/lib/theme";
 import { toast } from "@/lib/toast";
 import { Icon, type IconName } from "./Icon";
 import { copyShareLink, exportCsv, exportJson } from "./project/ProjectActions";
+import { openWelcome } from "./Welcome";
 
 interface Command {
   id: string;
@@ -174,6 +175,7 @@ export function CommandPalette() {
       { id: "theme-light", group: "Theme", label: "Light theme", icon: "sun", run: () => setTheme("light") },
       { id: "theme-dark", group: "Theme", label: "Dark theme", icon: "moon", run: () => setTheme("dark") },
       { id: "theme-system", group: "Theme", label: "Theme follows the system", icon: "monitor", run: () => setTheme("system") },
+      { id: "welcome", group: "Help", label: "Show the welcome window", hint: "How it works", icon: "info", run: openWelcome },
     );
     return out;
   }, [project, projects, router]);
