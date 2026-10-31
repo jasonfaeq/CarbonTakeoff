@@ -35,11 +35,17 @@ export async function loadDemo(demo: Demo): Promise<string> {
       document: { file: cache.file, provenance: cache.provenance, pagesScanned: cache.pagesScanned, pagesSent: cache.pagesSent },
       lines,
       autoAcceptHigh: false,
+      functionalUnit: demo.functionalUnit,
     });
   }
   const text = await (await fetch(demo.file)).text();
   const table = readCsvTable(text);
   const file = demo.file.split("/").pop()!;
   const lines = tableToLines(table, autoMapping(table.headers), file, "csv", catalogue);
-  return actions.createProject({ name: demo.title, document: { file, provenance: "Synthetic demo data, parsed in your browser." }, lines });
+  return actions.createProject({
+    name: demo.title,
+    document: { file, provenance: "Synthetic demo data, parsed in your browser." },
+    lines,
+    functionalUnit: demo.functionalUnit,
+  });
 }

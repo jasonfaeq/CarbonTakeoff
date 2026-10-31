@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { BomLine, LineStatus, Switches } from "@/lib/engine";
+import type { BomLine, FunctionalUnit, LineStatus, Switches } from "@/lib/engine";
 import type { SharedProject } from "@/lib/share";
 
 export interface DocumentInfo {
@@ -33,9 +33,15 @@ export interface Project {
   premiumPercent: number;
   /** Lines switched in the spend-vs-activity comparison. Null means the default: steel. */
   comparisonLineIds: string[] | null;
+  /** What the project delivers, for intensity: 3,180 m² GIA, 4.2 MW, 2.4 km. */
+  functionalUnit: FunctionalUnit | null;
+  /** A carbon budget for A1-A3, set by the user. */
+  budgetKgCO2e: number | null;
 }
 
-export type NewProject = Pick<Project, "name" | "document" | "lines"> & Partial<Pick<Project, "autoAcceptHigh">>;
+export type ProjectSettings = Pick<Project, "name" | "autoAcceptHigh" | "functionalUnit" | "budgetKgCO2e">;
+
+export type NewProject = Pick<Project, "name" | "document" | "lines"> & Partial<Pick<Project, "autoAcceptHigh" | "functionalUnit">>;
 
 interface State {
   projects: Project[];
@@ -73,6 +79,8 @@ function blankProject(init: NewProject): Project {
     activeScenarioId: null,
     premiumPercent: 15,
     comparisonLineIds: null,
+    functionalUnit: null,
+    budgetKgCO2e: null,
     ...init,
   };
 }
@@ -86,6 +94,8 @@ export function migrateProject(raw: Record<string, unknown>): Project {
     p.activeScenarioId = p.scenarios[0]?.id ?? null;
   }
   delete p.switches;
+  p.functionalUnit ??= null;
+  p.budgetKgCO2e ??= null;
   if (!p.scenarios.some((s) => s.id === p.activeScenarioId)) p.activeScenarioId = p.scenarios[0]?.id ?? null;
   return p;
 }
@@ -225,6 +235,9 @@ export const actions = {
   },
   renameProject(id: string, name: string) {
     setProject(id, (p) => ({ ...p, name }));
+  },
+  updateSettings(id: string, patch: Partial<ProjectSettings>) {
+    setProject(id, (p) => ({ ...p, ...patch }));
   },
   undo(id: string): boolean {
     const h = history.get(id);

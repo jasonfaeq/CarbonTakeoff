@@ -23,6 +23,7 @@ const NAV: NavItem[] = [
   { href: "/scenarios", label: "Scenarios", icon: "branch" },
   { href: "/transport", label: "Transport (A4)", icon: "truck" },
   { href: "/spend", label: "Spend vs activity", icon: "scale" },
+  { href: "/settings", label: "Settings", icon: "sliders" },
 ];
 
 function isTyping(target: EventTarget | null) {

@@ -1,4 +1,5 @@
 import type { IconName } from "@/components/Icon";
+import type { FunctionalUnit } from "@/lib/engine";
 
 export interface Demo {
   id: string;
@@ -10,6 +11,8 @@ export interface Demo {
   kind: "bom" | "spec";
   /** Served from public/, so it can also be downloaded. */
   file: string;
+  /** What the made-up project delivers, so its intensity can be shown. */
+  functionalUnit: FunctionalUnit;
 }
 
 /** Synthetic demo projects. Every file says so in its first line or on every page. */
@@ -22,6 +25,7 @@ export const DEMOS: Demo[] = [
     icon: "wind",
     kind: "bom",
     file: "/demo/wind-foundation.csv",
+    functionalUnit: { quantity: 4.2, unit: "MW" },
   },
   {
     id: "wind-spec",
@@ -31,6 +35,7 @@ export const DEMOS: Demo[] = [
     icon: "file",
     kind: "spec",
     file: "/demo/wind-spec.pdf",
+    functionalUnit: { quantity: 4.2, unit: "MW" },
   },
   {
     id: "battery-storage",
@@ -40,6 +45,7 @@ export const DEMOS: Demo[] = [
     icon: "battery",
     kind: "bom",
     file: "/demo/battery-storage.csv",
+    functionalUnit: { quantity: 40, unit: "MWh" },
   },
   {
     id: "solar-park",
@@ -49,6 +55,7 @@ export const DEMOS: Demo[] = [
     icon: "solar",
     kind: "bom",
     file: "/demo/solar-park.csv",
+    functionalUnit: { quantity: 12, unit: "MWp" },
   },
   {
     id: "residential-concrete",
@@ -58,6 +65,7 @@ export const DEMOS: Demo[] = [
     icon: "building",
     kind: "bom",
     file: "/demo/residential-concrete.csv",
+    functionalUnit: { quantity: 3180, unit: "m² GIA" },
   },
   {
     id: "residential-timber",
@@ -67,6 +75,7 @@ export const DEMOS: Demo[] = [
     icon: "building",
     kind: "bom",
     file: "/demo/residential-timber.csv",
+    functionalUnit: { quantity: 3180, unit: "m² GIA" },
   },
   {
     id: "warehouse",
@@ -76,6 +85,7 @@ export const DEMOS: Demo[] = [
     icon: "warehouse",
     kind: "bom",
     file: "/demo/warehouse.csv",
+    functionalUnit: { quantity: 12000, unit: "m² GIA" },
   },
   {
     id: "road-reconstruction",
@@ -85,6 +95,7 @@ export const DEMOS: Demo[] = [
     icon: "road",
     kind: "bom",
     file: "/demo/road-reconstruction.csv",
+    functionalUnit: { quantity: 2.4, unit: "km" },
   },
   {
     id: "water-main",
@@ -94,5 +105,6 @@ export const DEMOS: Demo[] = [
     icon: "droplet",
     kind: "spec",
     file: "/demo/water-main-spec.txt",
+    functionalUnit: { quantity: 3.2, unit: "km" },
   },
 ];

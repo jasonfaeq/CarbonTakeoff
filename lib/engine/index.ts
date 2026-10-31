@@ -7,3 +7,4 @@ export * from "./scenario";
 export * from "./spend";
 export * from "./insights";
 export * from "./transport";
+export * from "./quality";
