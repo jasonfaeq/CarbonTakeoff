@@ -6,6 +6,12 @@ import { DEMOS, type Demo } from "@/lib/demos";
 import { loadDemo } from "@/lib/load-demo";
 import { Icon } from "./Icon";
 
+const SECTOR_TILE: Record<Demo["sector"], string> = {
+  Energy: "bg-brand-soft text-brand-soft-ink",
+  Buildings: "bg-info-soft text-info",
+  Infrastructure: "bg-warn-soft text-warn",
+};
+
 export function DemoGallery() {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
@@ -23,9 +29,9 @@ export function DemoGallery() {
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {DEMOS.map((demo) => (
-        <li key={demo.id} className="card flex min-w-0 flex-col p-5">
+        <li key={demo.id} className="card card-lift flex min-w-0 flex-col p-5">
           <div className="flex items-center justify-between">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-surface-2 text-ink-2">
+            <span className={`grid h-10 w-10 place-items-center rounded-xl ${SECTOR_TILE[demo.sector]}`}>
               <Icon name={demo.icon} size={19} />
             </span>
             <span className="flex gap-1">
