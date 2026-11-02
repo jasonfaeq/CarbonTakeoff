@@ -156,10 +156,10 @@ export function matchFactor(description: string): Match {
   return { factorId: null, confidence: 0, reason: "No rule matched: pick a factor or reject this line", naics: null };
 }
 
-/** A proxy factor can never be high confidence, whatever matched it. */
+/** A proxy or an unverified factor can never be high confidence, whatever matched it. */
 export function capConfidence(confidence: number, factorId: string | null, catalogue: Catalogue): number {
   const factor = factorId ? catalogue.byId.get(factorId) : undefined;
-  if (factor?.applicability === "proxy") return Math.min(confidence, MEDIUM);
+  if (factor?.applicability === "proxy" || factor?.status === "UNVERIFIED") return Math.min(confidence, MEDIUM);
   return confidence;
 }
 

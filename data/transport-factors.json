@@ -1,11 +1,10 @@
 {
-  "_note": "SYNTHETIC PLACEHOLDER VALUES for A4 transport. Order of magnitude only. To be replaced by the DESNZ freight factors.",
-  "scope": "Tank-to-wheel emissions of the freight leg only (A4).",
+  "scope": "Direct (tank-to-wheel) emissions of the freight leg, A4. Well-to-tank emissions of the fuel are not included.",
   "modes": [
     {
       "id": "hgv-average",
-      "name": "HGV, average (diesel, average load)",
-      "value": 0.1,
+      "name": "HGV, average (all diesel HGVs, average laden)",
+      "value": 0.10356,
       "unit": "kg CO2e/tonne.km",
       "aliases": [
         "hgv",
@@ -14,36 +13,36 @@
         "road",
         "lkw"
       ],
-      "source": "Placeholder",
-      "sourceName": "Synthetic placeholder value for development",
-      "tableRow": "n/a",
-      "versionYear": "dev",
-      "licence": "n/a",
-      "url": "",
-      "retrieved": "2026-10-04",
-      "status": "PLACEHOLDER"
+      "source": "DESNZ 2026",
+      "sourceName": "UK Government GHG Conversion Factors for Company Reporting (DESNZ)",
+      "tableRow": "Sheet 'Freighting goods', cell D63: Average non-refrigerated HGVs",
+      "versionYear": "2026, version 1.0 (full set)",
+      "licence": "Open Government Licence v3.0",
+      "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026",
+      "retrieved": "2026-11-02",
+      "status": "VERIFIED"
     },
     {
       "id": "hgv-rigid",
-      "name": "HGV, rigid",
-      "value": 0.2,
+      "name": "HGV, rigid (average laden)",
+      "value": 0.19947,
       "unit": "kg CO2e/tonne.km",
       "aliases": [
         "rigid"
       ],
-      "source": "Placeholder",
-      "sourceName": "Synthetic placeholder value for development",
-      "tableRow": "n/a",
-      "versionYear": "dev",
-      "licence": "n/a",
-      "url": "",
-      "retrieved": "2026-10-04",
-      "status": "PLACEHOLDER"
+      "source": "DESNZ 2026",
+      "sourceName": "UK Government GHG Conversion Factors for Company Reporting (DESNZ)",
+      "tableRow": "Sheet 'Freighting goods', cell D51: Average non-refrigerated rigids",
+      "versionYear": "2026, version 1.0 (full set)",
+      "licence": "Open Government Licence v3.0",
+      "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026",
+      "retrieved": "2026-11-02",
+      "status": "VERIFIED"
     },
     {
       "id": "hgv-articulated",
-      "name": "HGV, articulated",
-      "value": 0.08,
+      "name": "HGV, articulated (average laden)",
+      "value": 0.07926,
       "unit": "kg CO2e/tonne.km",
       "aliases": [
         "artic",
@@ -51,56 +50,56 @@
         "semi",
         "sattelzug"
       ],
-      "source": "Placeholder",
-      "sourceName": "Synthetic placeholder value for development",
-      "tableRow": "n/a",
-      "versionYear": "dev",
-      "licence": "n/a",
-      "url": "",
-      "retrieved": "2026-10-04",
-      "status": "PLACEHOLDER"
+      "source": "DESNZ 2026",
+      "sourceName": "UK Government GHG Conversion Factors for Company Reporting (DESNZ)",
+      "tableRow": "Sheet 'Freighting goods', cell D60: Average non-refrigerated artics",
+      "versionYear": "2026, version 1.0 (full set)",
+      "licence": "Open Government Licence v3.0",
+      "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026",
+      "retrieved": "2026-11-02",
+      "status": "VERIFIED"
     },
     {
       "id": "van",
-      "name": "Van, up to 3.5 t",
-      "value": 0.6,
+      "name": "Van, up to 3.5 t (diesel)",
+      "value": 0.63511,
       "unit": "kg CO2e/tonne.km",
       "aliases": [
         "van",
         "transporter"
       ],
-      "source": "Placeholder",
-      "sourceName": "Synthetic placeholder value for development",
-      "tableRow": "n/a",
-      "versionYear": "dev",
-      "licence": "n/a",
-      "url": "",
-      "retrieved": "2026-10-04",
-      "status": "PLACEHOLDER"
+      "source": "DESNZ 2026",
+      "sourceName": "UK Government GHG Conversion Factors for Company Reporting (DESNZ)",
+      "tableRow": "Sheet 'Freighting goods', cell D35: Average (up to 3.5 tonnes)",
+      "versionYear": "2026, version 1.0 (full set)",
+      "licence": "Open Government Licence v3.0",
+      "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026",
+      "retrieved": "2026-11-02",
+      "status": "VERIFIED"
     },
     {
       "id": "rail",
       "name": "Rail freight",
-      "value": 0.03,
+      "value": 0.02583,
       "unit": "kg CO2e/tonne.km",
       "aliases": [
         "rail",
         "train",
         "bahn"
       ],
-      "source": "Placeholder",
-      "sourceName": "Synthetic placeholder value for development",
-      "tableRow": "n/a",
-      "versionYear": "dev",
-      "licence": "n/a",
-      "url": "",
-      "retrieved": "2026-10-04",
-      "status": "PLACEHOLDER"
+      "source": "DESNZ 2026",
+      "sourceName": "UK Government GHG Conversion Factors for Company Reporting (DESNZ)",
+      "tableRow": "Sheet 'Freighting goods', cell D106: Freight train",
+      "versionYear": "2026, version 1.0 (full set)",
+      "licence": "Open Government Licence v3.0",
+      "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026",
+      "retrieved": "2026-11-02",
+      "status": "VERIFIED"
     },
     {
       "id": "sea-bulk",
-      "name": "Sea, bulk carrier",
-      "value": 0.004,
+      "name": "Sea, bulk carrier (average)",
+      "value": 0.00353,
       "unit": "kg CO2e/tonne.km",
       "aliases": [
         "sea",
@@ -109,33 +108,33 @@
         "bulk carrier",
         "schiff"
       ],
-      "source": "Placeholder",
-      "sourceName": "Synthetic placeholder value for development",
-      "tableRow": "n/a",
-      "versionYear": "dev",
-      "licence": "n/a",
-      "url": "",
-      "retrieved": "2026-10-04",
-      "status": "PLACEHOLDER"
+      "source": "DESNZ 2026",
+      "sourceName": "UK Government GHG Conversion Factors for Company Reporting (DESNZ)",
+      "tableRow": "Sheet 'Freighting goods', cell E145: Bulk carrier, Average",
+      "versionYear": "2026, version 1.0 (full set)",
+      "licence": "Open Government Licence v3.0",
+      "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026",
+      "retrieved": "2026-11-02",
+      "status": "VERIFIED"
     },
     {
       "id": "sea-container",
-      "name": "Sea, container ship",
-      "value": 0.016,
+      "name": "Sea, container ship (average)",
+      "value": 0.01612,
       "unit": "kg CO2e/tonne.km",
       "aliases": [
         "container",
         "container ship",
         "containership"
       ],
-      "source": "Placeholder",
-      "sourceName": "Synthetic placeholder value for development",
-      "tableRow": "n/a",
-      "versionYear": "dev",
-      "licence": "n/a",
-      "url": "",
-      "retrieved": "2026-10-04",
-      "status": "PLACEHOLDER"
+      "source": "DESNZ 2026",
+      "sourceName": "UK Government GHG Conversion Factors for Company Reporting (DESNZ)",
+      "tableRow": "Sheet 'Freighting goods', cell E159: Container ship, Average",
+      "versionYear": "2026, version 1.0 (full set)",
+      "licence": "Open Government Licence v3.0",
+      "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026",
+      "retrieved": "2026-11-02",
+      "status": "VERIFIED"
     }
   ]
 }

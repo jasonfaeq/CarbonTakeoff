@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Project rules
 
-- Never type an emission factor into code or data by hand. `data/factors.json` holds synthetic placeholder values (status `PLACEHOLDER`) until the import script exists, and the UI must say so.
+- Never type an emission factor into code or data by hand. `data/*.json` is written by `scripts/build_factors.py` from the published sources: change the script and run `npm run factors`, never edit the JSON.
 - Every number a user sees needs a source they can open.
 - Nothing matched or extracted counts towards a total until a person accepts it, or opts in to auto-accept for high-confidence lines.
 - Missing data is an error on the line. Never fill a gap with an assumed value.

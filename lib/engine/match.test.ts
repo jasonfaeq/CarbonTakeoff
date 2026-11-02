@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { catalogue } from "@/lib/catalogue";
+import { buildCatalogue } from "./catalogue";
 import { capConfidence, confidenceLabel, matchFactor } from "./match";
 
 describe("matchFactor", () => {
@@ -99,6 +100,12 @@ describe("capConfidence", () => {
     expect(capConfidence(0.9, null, catalogue)).toBe(0.9);
   });
 
+  it("caps an unverified factor at medium too", () => {
+    const rebar = catalogue.byId.get("rebar")!;
+    const withUnverified = buildCatalogue([...catalogue.factors, { ...rebar, id: "typed-in", status: "UNVERIFIED" }]);
+    expect(capConfidence(0.9, "typed-in", withUnverified)).toBe(0.6);
+  });
+
   it("labels confidence", () => {
     expect(confidenceLabel(0.9)).toBe("High");
     expect(confidenceLabel(0.6)).toBe("Medium");
@@ -107,6 +114,16 @@ describe("capConfidence", () => {
 });
 
 describe("catalogue", () => {
+  it("is built from the sources, with full provenance on every factor", () => {
+    for (const f of catalogue.factors) {
+      expect(f.status, f.id).toBe("VERIFIED");
+      expect(f.url, f.id).toMatch(/^https:\/\//);
+      expect(f.tableRow, f.id).not.toBe("");
+      expect(f.licence, f.id).not.toBe("");
+      expect(f.retrieved, f.id).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
   it("only points alternatives at factors that exist", () => {
     for (const factor of catalogue.factors) {
       for (const alt of factor.alternatives) expect(catalogue.byId.has(alt), `${factor.id} -> ${alt}`).toBe(true);
