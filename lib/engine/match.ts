@@ -127,6 +127,12 @@ const RULES: Rule[] = [
   },
   { test: /polypropylene|\bpp\b/i, factorId: "pp-primary", confidence: HIGH, reason: "Named as polypropylene" },
   {
+    test: /planings.*re-?used|re-?used.*planings|re-?used asphalt|asphalt.*re-?used/i,
+    factorId: "asphalt-reused",
+    confidence: HIGH,
+    reason: "Asphalt re-used as it is",
+  },
+  {
     test: /recycl\w* asphalt|reclaimed asphalt|asphalt planings|\bplanings\b|\brap\b/i,
     factorId: "asphalt-recycled",
     confidence: HIGH,

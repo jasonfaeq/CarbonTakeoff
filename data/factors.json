@@ -107,8 +107,7 @@
       "status": "VERIFIED",
       "applicability": "direct",
       "alternatives": [
-        "asphalt-recycled",
-        "asphalt-reused"
+        "asphalt-recycled"
       ],
       "note": null
     },
@@ -150,7 +149,7 @@
       "status": "VERIFIED",
       "applicability": "direct",
       "alternatives": [],
-      "note": "Material re-used as it is, such as planings re-laid in a lower layer."
+      "note": "Material re-used as it is, such as planings re-laid in a lower layer. Not offered as an alternative to new asphalt."
     },
     {
       "id": "bricks",

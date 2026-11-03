@@ -78,7 +78,8 @@ describe("matchFactor", () => {
   });
 
   it("tells recycled asphalt from new", () => {
-    expect(matchFactor("Recycled asphalt planings reused in base").factorId).toBe("asphalt-recycled");
+    expect(matchFactor("Recycled asphalt planings reused in base").factorId).toBe("asphalt-reused");
+    expect(matchFactor("Reclaimed asphalt in binder course").factorId).toBe("asphalt-recycled");
     expect(matchFactor("Asphalt surface course SMA 10").factorId).toBe("asphalt-primary");
   });
 
