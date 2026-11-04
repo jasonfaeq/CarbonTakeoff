@@ -36,9 +36,14 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
       </head>
       <body className="flex min-h-full flex-col">
+        <a href="#content" className="skip-link">
+          Skip to content
+        </a>
         <HatchDefs />
         <AppHeader />
-        <div className="flex flex-1 flex-col">{children}</div>
+        <div id="content" tabIndex={-1} className="flex flex-1 flex-col outline-none">
+          {children}
+        </div>
         <CommandPalette />
         <Welcome />
         <Toaster />

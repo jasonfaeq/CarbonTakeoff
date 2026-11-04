@@ -36,7 +36,14 @@ export function Treemap({
   );
 
   return (
-    <div ref={ref} className="relative w-full overflow-hidden rounded-xl" style={{ height }} onMouseLeave={() => setHover(null)}>
+    <div
+      ref={ref}
+      role="group"
+      aria-label="Counted lines sized by their carbon"
+      className="relative w-full overflow-hidden rounded-xl"
+      style={{ height }}
+      onMouseLeave={() => setHover(null)}
+    >
       {tiles.map(({ item, x, y, w, h }) => {
         const big = w > 90 && h > 44;
         const medium = w > 54 && h > 26;

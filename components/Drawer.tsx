@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { Icon } from "./Icon";
 
 /** A panel that slides in from the right. A native dialog, so focus and Escape behave. */
@@ -20,6 +20,7 @@ export function Drawer({
   footer?: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
 
   useEffect(() => {
     const el = ref.current;
@@ -32,6 +33,7 @@ export function Drawer({
     <dialog
       ref={ref}
       className="drawer"
+      aria-labelledby={titleId}
       onClose={onClose}
       onCancel={(e) => {
         e.preventDefault();
@@ -45,7 +47,9 @@ export function Drawer({
         <div className="flex h-full flex-col">
           <div className="flex items-start gap-3 border-b border-line px-6 py-5">
             <div className="min-w-0 flex-1">
-              <h2 className="text-lg leading-snug font-semibold tracking-tight">{title}</h2>
+              <h2 id={titleId} className="text-lg leading-snug font-semibold tracking-tight">
+                {title}
+              </h2>
               {subtitle && <div className="mt-1 text-sm text-ink-3">{subtitle}</div>}
             </div>
             <button className="btn btn-ghost btn-icon -mt-1 -mr-2" onClick={onClose} aria-label="Close">

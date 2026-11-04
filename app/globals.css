@@ -15,7 +15,7 @@
   --surface-3: #e9e6dd;
   --ink: #16181d;
   --ink-2: #4a4e59;
-  --ink-3: #757a86;
+  --ink-3: #636873;
   --line: #e7e4db;
   --line-2: #d5d1c5;
   --brand: #0f6e4e;
@@ -204,6 +204,21 @@ body {
 }
 
 @layer base {
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.5rem 0.9rem;
+    border-radius: 10px;
+    background: var(--ink);
+    color: var(--bg);
+    font-weight: 500;
+  }
+  .skip-link:focus {
+    top: 0.6rem;
+  }
+
   /* In the base layer, so a component or utility can still turn it off. */
   :focus-visible {
     outline: 2px solid var(--brand);

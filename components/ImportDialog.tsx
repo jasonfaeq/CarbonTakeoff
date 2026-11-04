@@ -36,10 +36,12 @@ export function ImportDialog({
   }
 
   return (
-    <dialog ref={ref} onCancel={onCancel} className="dialog w-[min(60rem,calc(100vw-2rem))]">
+    <dialog ref={ref} onCancel={onCancel} aria-labelledby="import-title" className="dialog w-[min(60rem,calc(100vw-2rem))]">
       <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-5">
         <div>
-          <h2 className="text-lg font-semibold tracking-tight">Which column is which?</h2>
+          <h2 id="import-title" className="text-lg font-semibold tracking-tight">
+            Which column is which?
+          </h2>
           <p className="mt-1 text-sm text-ink-2">
             <span className="font-medium text-ink">{fileName}</span>, {rowCount} rows. Some headers were not recognised. Description, quantity and
             unit are needed; the rest is optional.

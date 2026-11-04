@@ -200,6 +200,7 @@ export function CommandPalette() {
     <dialog
       ref={dialog}
       className="dialog mt-[12vh] w-[min(40rem,calc(100vw-2rem))]"
+      aria-label="Command palette"
       onClose={closePalette}
       onClick={(e) => {
         if (e.target === dialog.current) closePalette();

@@ -6,6 +6,8 @@ import { catalogue, spendData, transportModes, usingPlaceholderFactors } from "@
 import {
   compareAccounting,
   computeScenario,
+  intensity,
+  qualitySummary,
   computeTotals,
   computeTransportTotals,
   defaultComparisonLines,
@@ -55,6 +57,8 @@ export function Report({ project }: { project: Project }) {
     comparisonIds.map((id) => [id, alternativesFor(byId.get(id) ?? { factorId: null }, catalogue)[0]?.id]).filter(([, alt]) => alt),
   );
   const spend = compareAccounting(project.lines, comparisonSwitches, project.premiumPercent, catalogue, spendData, options);
+  const quality = qualitySummary(project.lines, totals, catalogue);
+  const perUnit = intensity(totals.kgCO2e, project.functionalUnit);
   const usedFactors = [...new Set(totals.ranked.map((r) => r.factorId!))].map((id) => catalogue.byId.get(id)!).filter(Boolean) as Factor[];
   const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   const change = (a: number, b: number) => (a > 0 ? ((b - a) / a) * 100 : 0);
@@ -102,6 +106,20 @@ export function Report({ project }: { project: Project }) {
             label="From proxy factors"
             value={totals.kgCO2e > 0 ? percent((proxyKg / totals.kgCO2e) * 100) : "–"}
             detail="Closest factor, not the product"
+          />
+          {perUnit !== null && project.functionalUnit && (
+            <Figure
+              label="Intensity"
+              value={Math.round(perUnit).toLocaleString("en-GB")}
+              unit={`kg CO₂e per ${project.functionalUnit.unit}`}
+              detail={`Over ${project.functionalUnit.quantity.toLocaleString("en-GB")} ${project.functionalUnit.unit}`}
+            />
+          )}
+          <Figure
+            label="Data quality"
+            value={quality.grade}
+            unit={`${Math.round(quality.score)} / 100`}
+            detail="Good factors count fully, fair ones half"
           />
         </section>
         <p className="mt-6 text-sm text-ink-2">
