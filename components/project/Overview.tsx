@@ -13,7 +13,7 @@ import {
   switchAll,
   type Insight,
 } from "@/lib/engine";
-import { percent, tonnes } from "@/lib/format";
+import { intensityValue, percent, tonnes } from "@/lib/format";
 import { BarList } from "../charts/BarList";
 import { Donut } from "../charts/Donut";
 import { Sankey } from "../charts/Sankey";
@@ -120,8 +120,8 @@ export function Overview() {
           <Kpi
             icon="target"
             label="Intensity"
-            value={Math.round(perUnit).toLocaleString("en-GB")}
-            unit={`kg CO₂e per ${project.functionalUnit.unit}`}
+            value={intensityValue(perUnit)}
+            unit={`${perUnit >= 10_000 ? "t" : "kg"} CO₂e per ${project.functionalUnit.unit}`}
             detail={`Over ${project.functionalUnit.quantity.toLocaleString("en-GB")} ${project.functionalUnit.unit}`}
           />
         ) : (

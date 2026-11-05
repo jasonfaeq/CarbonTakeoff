@@ -27,3 +27,9 @@ export function timeAgo(iso: string, now = Date.now()): string {
   if (s < 7 * 86400) return `${Math.floor(s / 86400)} day${s < 2 * 86400 ? "" : "s"} ago`;
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
+
+// 137,558 kg/MW is unreadable, 137.6 t/MW isn't. switch to tonnes from 10 t per unit
+export function intensityValue(kgPerUnit: number): string {
+  if (kgPerUnit >= 10_000) return (kgPerUnit / 1000).toLocaleString("en-GB", { maximumFractionDigits: 1, minimumFractionDigits: 1 });
+  return Math.round(kgPerUnit).toLocaleString("en-GB");
+}

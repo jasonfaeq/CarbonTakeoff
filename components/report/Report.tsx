@@ -14,7 +14,7 @@ import {
   alternativesFor,
   type Factor,
 } from "@/lib/engine";
-import { factorValue, percent, quantity, tonnes } from "@/lib/format";
+import { factorValue, intensityValue, percent, quantity, tonnes } from "@/lib/format";
 import type { Project } from "@/lib/store";
 import { BarList } from "../charts/BarList";
 import { Donut } from "../charts/Donut";
@@ -110,8 +110,8 @@ export function Report({ project }: { project: Project }) {
           {perUnit !== null && project.functionalUnit && (
             <Figure
               label="Intensity"
-              value={Math.round(perUnit).toLocaleString("en-GB")}
-              unit={`kg CO₂e per ${project.functionalUnit.unit}`}
+              value={intensityValue(perUnit)}
+              unit={`${perUnit >= 10_000 ? "t" : "kg"} CO₂e per ${project.functionalUnit.unit}`}
               detail={`Over ${project.functionalUnit.quantity.toLocaleString("en-GB")} ${project.functionalUnit.unit}`}
             />
           )}
